@@ -3,7 +3,8 @@ services:
   app:
     build: ./grpc
     ports:
-      - "8000:8080"
+      - "8080:8080"
+      - "50051:50051"
     stdin_open: true
     tty: true
     volumes:
