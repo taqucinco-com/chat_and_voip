@@ -31,11 +31,10 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _counter = useState(0);
+    final _log = useState<List<String>>([]);
+    final scrollController = useScrollController();
 
-    void _test() async {
-      _counter.value++;
-
+    void _unary() async {
       final channel = ClientChannel(
         'localhost',
         port: 50051,
@@ -45,43 +44,70 @@ class MyHomePage extends HookConsumerWidget {
         ),
       );
       final stub = GreeterClient(channel);
-      const name = 'flutter gRPC world';
+      const name = 'flutter world';
       try {
         final response = await stub.sayHello(
           HelloRequest()..name = name,
           // options: CallOptions(compression: const GzipCodec()),
         );
-        print('Greeter client received: ${response.message}');
+        _log.value = [
+          ..._log.value,
+          'Greeter unary received: ${response.message}'
+        ];
       } catch (e) {
         print('Caught error: $e');
         await channel.shutdown();
       }
     }
 
+    Stream<int> toSquared(List<int> numbers) async* {
+      for (int n in numbers) {
+        yield n * n;
+      }
+    }
+
+    void _serverStream() async {
+      final numbers = [1, 2, 3, 4, 5];
+
+      await for (int n in toSquared(numbers)) {
+        print(n);
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(title),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: _log.value.map((v) => Text(v)).toList(),
+          ),
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // FABを右端に配置
           children: <Widget>[
-            const Text(
-              'Test unary',
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  _unary();
+                },
+                tooltip: 'unary',
+                child: const Text('unary'),
+              ),
             ),
-            Text(
-              '${_counter.value}',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  _serverStream();
+                },
+                tooltip: 'server stream',
+                child: const Text('server stream'),
+              ),
             ),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _test,
-        tooltip: 'test',
-        child: const Icon(Icons.abc),
-      ),
-    );
+        ));
   }
 }

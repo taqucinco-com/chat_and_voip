@@ -67,3 +67,5 @@ $ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/helloworld/ 
 1. `helloworld.proto`のgolang生成コマンドを実行する
 1. `{protoファイル名}_grpc.pb.go`から`Unimplemented{サービス名}Server`の定義を探す
 1. `server.go`にインターフェースを実装する
+
+### flutter

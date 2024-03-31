@@ -25,6 +25,10 @@ class GreeterClient extends $grpc.Client {
       '/greeter.Greeter/SayHello',
       ($0.HelloRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.HelloResponse.fromBuffer(value));
+  static final _$sayHelloAgain = $grpc.ClientMethod<$0.HelloRequest, $0.HelloResponse>(
+      '/greeter.Greeter/SayHelloAgain',
+      ($0.HelloRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.HelloResponse.fromBuffer(value));
 
   GreeterClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -34,6 +38,10 @@ class GreeterClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.HelloResponse> sayHello($0.HelloRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$sayHello, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.HelloResponse> sayHelloAgain($0.HelloRequest request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$sayHelloAgain, $async.Stream.fromIterable([request]), options: options);
   }
 }
 
@@ -49,11 +57,23 @@ abstract class GreeterServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.HelloRequest.fromBuffer(value),
         ($0.HelloResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.HelloRequest, $0.HelloResponse>(
+        'SayHelloAgain',
+        sayHelloAgain_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.HelloRequest.fromBuffer(value),
+        ($0.HelloResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.HelloResponse> sayHello_Pre($grpc.ServiceCall call, $async.Future<$0.HelloRequest> request) async {
     return sayHello(call, await request);
   }
 
+  $async.Stream<$0.HelloResponse> sayHelloAgain_Pre($grpc.ServiceCall call, $async.Future<$0.HelloRequest> request) async* {
+    yield* sayHelloAgain(call, await request);
+  }
+
   $async.Future<$0.HelloResponse> sayHello($grpc.ServiceCall call, $0.HelloRequest request);
+  $async.Stream<$0.HelloResponse> sayHelloAgain($grpc.ServiceCall call, $0.HelloRequest request);
 }
