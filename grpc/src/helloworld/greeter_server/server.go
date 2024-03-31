@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	pb "example.com/myapp/helloworld"
 	"google.golang.org/grpc"
@@ -23,8 +24,22 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloResponse, error) {
-	log.Printf("Received: %v", in.GetName())
+	log.Printf("Received SayHello: %v", in.GetName())
 	return &pb.HelloResponse{Message: "Hello " + in.GetName()}, nil
+}
+
+// SayHelloAgain implements helloworld.GreeterServer
+func (s *server) SayHelloAgain(in *pb.HelloRequest, stream pb.Greeter_SayHelloAgainServer) error {
+	log.Printf("Received SayHelloAgain: %v", in.GetName())
+	for i := 0; i < 2; i++ {
+		res := &pb.HelloResponse{Message: "Hello " + in.GetName()}
+		if err := stream.Send(res); err != nil {
+			log.Fatalf("failed to send: %v", err)
+			return err
+		}
+		time.Sleep(1 * time.Second)
+	}
+	return nil
 }
 
 func main() {

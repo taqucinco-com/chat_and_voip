@@ -56,3 +56,14 @@ $ cd myflutterapp
 $ mkdir lib/src/generated -p
 $ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/helloworld/ helloworld.proto --plugin=protoc-gen-dart=$HOME/.pub-cache/bin/protoc-gen-dart 
 ```
+## server stream
+
+### proto
+
+1. helloworld.protoを編集する
+
+### golang
+
+1. `helloworld.proto`のgolang生成コマンドを実行する
+1. `{protoファイル名}_grpc.pb.go`から`Unimplemented{サービス名}Server`の定義を探す
+1. `server.go`にインターフェースを実装する

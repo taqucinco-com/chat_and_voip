@@ -7,6 +7,7 @@ option go_package = "example.com/myapp/helloworld";
 
 service Greeter {
   rpc SayHello (HelloRequest) returns (HelloResponse) {}
+  rpc SayHelloAgain(HelloRequest) returns (stream HelloResponse) {}
 }
 
 message HelloRequest {
