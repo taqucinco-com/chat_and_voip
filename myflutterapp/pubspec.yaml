@@ -39,6 +39,8 @@ dependencies:
   hive: ^2.2.3
   riverpod: ^2.5.1
   grpc: ^3.2.4
+  flutter_riverpod: ^2.5.1
+  hooks_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:
