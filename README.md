@@ -2,6 +2,14 @@
 
 ## 初回設定
 
+## gRPC
+
+https://grpc.io/docs/protoc-installation/
+
+### golang server
+
+1. GOのサーバーを起動する
+
 ```
 $ docker compose exec app bash
 # go mod init example.com/myapp
@@ -15,6 +23,8 @@ $ go run helloworld/greeter_server/server.go
 $ go run helloworld/greeter_client/client.go 
 ```
 
+1. 確認方法
+
 ```
 $ brew install grpcurl
 $ grpcurl -plaintext localhost:50051 list
@@ -26,4 +36,23 @@ $ grpcurl -plaintext localhost:50051 list greeter.Greeter
     // サービスのメソッドを表示する
     // greeter.Greeter.SayHello
 $ grpcurl -plaintext -d '{"name": "taro"}' localhost:50051 greeter.Greeter.SayHello
+```
+
+### flutter client
+
+https://grpc.io/docs/languages/dart/quickstart/
+
+1. Protocl bufferのdart pluginをインストール
+
+```
+$ dart pub global activate protoc_plugin
+$ export PATH="$PATH:$HOME/.pub-cache/bin"
+```
+
+1. dartコードを生成する
+
+```
+$ cd myflutterapp
+$ mkdir lib/src/generated -p
+$ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/helloworld/ helloworld.proto --plugin=protoc-gen-dart=$HOME/.pub-cache/bin/protoc-gen-dart 
 ```
