@@ -14,3 +14,16 @@ $ go mod tidy
 $ go run helloworld/greeter_server/server.go 
 $ go run helloworld/greeter_client/client.go 
 ```
+
+```
+$ brew install grpcurl
+$ grpcurl -plaintext localhost:50051 list
+    // greeter.Greeter
+    // grpc.reflection.v1.ServerReflection
+    // grpc.reflection.v1alpha.ServerReflection
+    // サービスを表示する
+$ grpcurl -plaintext localhost:50051 list greeter.Greeter
+    // サービスのメソッドを表示する
+    // greeter.Greeter.SayHello
+$ grpcurl -plaintext -d '{"name": "taro"}' localhost:50051 greeter.Greeter.SayHello
+```
