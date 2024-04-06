@@ -4,9 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"time"
+	"strings"
 
 	pb "example.com/myapp/helloworld"
 	"google.golang.org/grpc"
@@ -40,6 +42,25 @@ func (s *server) SayHelloAgain(in *pb.HelloRequest, stream pb.Greeter_SayHelloAg
 		time.Sleep(1 * time.Second)
 	}
 	return nil
+}
+
+func (s *server) SayHelloToMany(stream pb.Greeter_SayHelloToManyServer) error {
+	log.Printf("Start SayHelloToMany")
+	var slice []string
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			joinedString := strings.Join(slice, ", ")
+			return stream.SendAndClose(&pb.HelloResponse{
+				Message: "Hello! " + joinedString,
+			})
+		}
+		if err != nil {
+			return err
+		}
+		log.Printf("Received SayHelloToMany: %v", in.Name)
+		slice = append(slice, in.Name)
+	}
 }
 
 func main() {
