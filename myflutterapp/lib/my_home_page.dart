@@ -78,10 +78,10 @@ class MyHomePage extends HookConsumerWidget {
       Stream<HelloRequest> requestStream() async* {
         yield HelloRequest()..name = 'taro';
         _log.value = [..._log.value, 'Greeter client streaming send: taro'];
-        await Future.delayed(const Duration(milliseconds: 3000));
+        await Future.delayed(const Duration(milliseconds: 1000));
         yield HelloRequest()..name = 'hanako';
         _log.value = [..._log.value, 'Greeter client streaming send: hanako'];
-        await Future.delayed(const Duration(milliseconds: 3000));
+        await Future.delayed(const Duration(milliseconds: 1000));
         _log.value = [..._log.value, 'Greeter client streaming close'];
       }
 

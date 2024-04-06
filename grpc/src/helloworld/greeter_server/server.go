@@ -62,6 +62,25 @@ func (s *server) SayHelloToMany(stream pb.Greeter_SayHelloToManyServer) error {
 		}
 		log.Printf("Received SayHelloToMany: %v", in.Name)
 		slice = append(slice, in.Name)
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func (s *server) SayChat(stream pb.Greeter_SayChatServer) error {
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		name := in.Name
+		res := &pb.HelloResponse{Message: "Hello " + name}
+		if err := stream.Send(res); err != nil {
+			return err
+		}
+		time.Sleep(3 * time.Second)
 	}
 }
 

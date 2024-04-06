@@ -34,10 +34,14 @@ $ grpcurl -plaintext localhost:50051 list
     // サービスを表示する
 $ grpcurl -plaintext localhost:50051 list greeter.Greeter
     // サービスのメソッドを表示する
+    // greeter.Greeter.SayChat
     // greeter.Greeter.SayHello
+    // greeter.Greeter.SayHelloAgain
+    // greeter.Greeter.SayHelloToMany
 $ grpcurl -plaintext -d '{"name": "taro"}' localhost:50051 greeter.Greeter.SayHello
 $ grpcurl -plaintext -d '{"name": "taro"}' localhost:50051 greeter.Greeter.SayHelloAgain
 $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext localhost:50051 greeter.Greeter.SayHelloToMany
+$ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext localhost:50051 greeter.Greeter.SayChat
 ```
 
 ### flutter client

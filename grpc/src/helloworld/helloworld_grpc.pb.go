@@ -25,6 +25,7 @@ type GreeterClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
 	SayHelloAgain(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (Greeter_SayHelloAgainClient, error)
 	SayHelloToMany(ctx context.Context, opts ...grpc.CallOption) (Greeter_SayHelloToManyClient, error)
+	SayChat(ctx context.Context, opts ...grpc.CallOption) (Greeter_SayChatClient, error)
 }
 
 type greeterClient struct {
@@ -110,6 +111,37 @@ func (x *greeterSayHelloToManyClient) CloseAndRecv() (*HelloResponse, error) {
 	return m, nil
 }
 
+func (c *greeterClient) SayChat(ctx context.Context, opts ...grpc.CallOption) (Greeter_SayChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Greeter_ServiceDesc.Streams[2], "/greeter.Greeter/SayChat", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &greeterSayChatClient{stream}
+	return x, nil
+}
+
+type Greeter_SayChatClient interface {
+	Send(*HelloRequest) error
+	Recv() (*HelloResponse, error)
+	grpc.ClientStream
+}
+
+type greeterSayChatClient struct {
+	grpc.ClientStream
+}
+
+func (x *greeterSayChatClient) Send(m *HelloRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *greeterSayChatClient) Recv() (*HelloResponse, error) {
+	m := new(HelloResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // GreeterServer is the server API for Greeter service.
 // All implementations must embed UnimplementedGreeterServer
 // for forward compatibility
@@ -117,6 +149,7 @@ type GreeterServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloResponse, error)
 	SayHelloAgain(*HelloRequest, Greeter_SayHelloAgainServer) error
 	SayHelloToMany(Greeter_SayHelloToManyServer) error
+	SayChat(Greeter_SayChatServer) error
 	mustEmbedUnimplementedGreeterServer()
 }
 
@@ -132,6 +165,9 @@ func (UnimplementedGreeterServer) SayHelloAgain(*HelloRequest, Greeter_SayHelloA
 }
 func (UnimplementedGreeterServer) SayHelloToMany(Greeter_SayHelloToManyServer) error {
 	return status.Errorf(codes.Unimplemented, "method SayHelloToMany not implemented")
+}
+func (UnimplementedGreeterServer) SayChat(Greeter_SayChatServer) error {
+	return status.Errorf(codes.Unimplemented, "method SayChat not implemented")
 }
 func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
 
@@ -211,6 +247,32 @@ func (x *greeterSayHelloToManyServer) Recv() (*HelloRequest, error) {
 	return m, nil
 }
 
+func _Greeter_SayChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(GreeterServer).SayChat(&greeterSayChatServer{stream})
+}
+
+type Greeter_SayChatServer interface {
+	Send(*HelloResponse) error
+	Recv() (*HelloRequest, error)
+	grpc.ServerStream
+}
+
+type greeterSayChatServer struct {
+	grpc.ServerStream
+}
+
+func (x *greeterSayChatServer) Send(m *HelloResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *greeterSayChatServer) Recv() (*HelloRequest, error) {
+	m := new(HelloRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -232,6 +294,12 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "SayHelloToMany",
 			Handler:       _Greeter_SayHelloToMany_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "SayChat",
+			Handler:       _Greeter_SayChat_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},

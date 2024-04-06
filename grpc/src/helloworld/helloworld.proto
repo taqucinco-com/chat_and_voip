@@ -9,6 +9,7 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloResponse) {}
   rpc SayHelloAgain(HelloRequest) returns (stream HelloResponse) {}
   rpc SayHelloToMany(stream HelloRequest) returns (HelloResponse) {}
+  rpc SayChat(stream HelloRequest) returns (stream HelloResponse) {}
 }
 
 message HelloRequest {
