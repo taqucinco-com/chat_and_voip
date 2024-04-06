@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 import 'package:myflutterapp/src/generated/helloworld.pbgrpc.dart';
@@ -92,6 +94,34 @@ class MyHomePage extends HookConsumerWidget {
       ];
     }
 
+    void _biDirectional() async {
+      final channel = ClientChannel(
+        'localhost',
+        port: 50051,
+        options:
+            const ChannelOptions(credentials: ChannelCredentials.insecure()),
+      );
+      final stub = GreeterClient(channel);
+
+      Stream<HelloRequest> requestStream() async* {
+        yield HelloRequest()..name = 'taro';
+        _log.value = [..._log.value, 'Greeter bi-directional send: taro'];
+        await Future.delayed(const Duration(milliseconds: 5000));
+        yield HelloRequest()..name = 'hanako';
+        _log.value = [..._log.value, 'Greeter bi-directional send: hanako'];
+        await Future.delayed(const Duration(milliseconds: 5000));
+      }
+
+      final responseStream = stub.sayChat(requestStream());
+      await for (var response in responseStream) {
+        _log.value = [
+          ..._log.value,
+          'Greeter bi-directional received: ${response.message}'
+        ];
+      }
+      _log.value = [..._log.value, 'Greeter bi-directional close'];
+    }
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -133,6 +163,16 @@ class MyHomePage extends HookConsumerWidget {
                 },
                 tooltip: 'client stream',
                 child: const Text('client stream'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  _biDirectional();
+                },
+                tooltip: 'bi-directional',
+                child: const Text('bi-directional'),
               ),
             ),
           ],

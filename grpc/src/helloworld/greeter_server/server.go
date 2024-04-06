@@ -46,7 +46,7 @@ func (s *server) SayHelloAgain(in *pb.HelloRequest, stream pb.Greeter_SayHelloAg
 }
 
 func (s *server) SayHelloToMany(stream pb.Greeter_SayHelloToManyServer) error {
-	log.Printf("Start SayHelloToMany")
+	log.Printf("Open SayHelloToMany")
 	var slice []string
 	for {
 		in, err := stream.Recv()
@@ -67,20 +67,24 @@ func (s *server) SayHelloToMany(stream pb.Greeter_SayHelloToManyServer) error {
 }
 
 func (s *server) SayChat(stream pb.Greeter_SayChatServer) error {
+	log.Printf("Open SayChat")
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
+			log.Printf("Closed SayChat")
 			return nil
 		}
 		if err != nil {
 			return err
 		}
 		name := in.Name
+		log.Printf("Received SayChat: %v", in.Name)
+		time.Sleep(3 * time.Second)
+		log.Printf("Send SayChat: %v", in.Name)
 		res := &pb.HelloResponse{Message: "Hello " + name}
 		if err := stream.Send(res); err != nil {
 			return err
 		}
-		time.Sleep(3 * time.Second)
 	}
 }
 

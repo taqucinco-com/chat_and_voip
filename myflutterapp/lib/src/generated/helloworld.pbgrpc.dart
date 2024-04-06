@@ -33,6 +33,10 @@ class GreeterClient extends $grpc.Client {
       '/greeter.Greeter/SayHelloToMany',
       ($0.HelloRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.HelloResponse.fromBuffer(value));
+  static final _$sayChat = $grpc.ClientMethod<$0.HelloRequest, $0.HelloResponse>(
+      '/greeter.Greeter/SayChat',
+      ($0.HelloRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.HelloResponse.fromBuffer(value));
 
   GreeterClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -50,6 +54,10 @@ class GreeterClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.HelloResponse> sayHelloToMany($async.Stream<$0.HelloRequest> request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$sayHelloToMany, request, options: options).single;
+  }
+
+  $grpc.ResponseStream<$0.HelloResponse> sayChat($async.Stream<$0.HelloRequest> request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$sayChat, request, options: options);
   }
 }
 
@@ -79,6 +87,13 @@ abstract class GreeterServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.HelloRequest.fromBuffer(value),
         ($0.HelloResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.HelloRequest, $0.HelloResponse>(
+        'SayChat',
+        sayChat,
+        true,
+        true,
+        ($core.List<$core.int> value) => $0.HelloRequest.fromBuffer(value),
+        ($0.HelloResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.HelloResponse> sayHello_Pre($grpc.ServiceCall call, $async.Future<$0.HelloRequest> request) async {
@@ -92,4 +107,5 @@ abstract class GreeterServiceBase extends $grpc.Service {
   $async.Future<$0.HelloResponse> sayHello($grpc.ServiceCall call, $0.HelloRequest request);
   $async.Stream<$0.HelloResponse> sayHelloAgain($grpc.ServiceCall call, $0.HelloRequest request);
   $async.Future<$0.HelloResponse> sayHelloToMany($grpc.ServiceCall call, $async.Stream<$0.HelloRequest> request);
+  $async.Stream<$0.HelloResponse> sayChat($grpc.ServiceCall call, $async.Stream<$0.HelloRequest> request);
 }
