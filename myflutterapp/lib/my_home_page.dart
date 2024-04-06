@@ -24,6 +24,7 @@ class MyHomePage extends HookConsumerWidget {
       );
       final stub = GreeterClient(channel);
       const name = 'flutter world';
+
       try {
         final response = await stub.sayHello(
           HelloRequest()..name = name,
@@ -57,11 +58,38 @@ class MyHomePage extends HookConsumerWidget {
             'Greeter server streaming received: ${response.message}'
           ];
         }
+        _log.value = [..._log.value, 'Greeter server streaming closed'];
       } catch (e) {
         print('Caught error: $e');
       } finally {
         await channel.shutdown();
       }
+    }
+
+    void _clientStream() async {
+      final channel = ClientChannel(
+        'localhost',
+        port: 50051,
+        options:
+            const ChannelOptions(credentials: ChannelCredentials.insecure()),
+      );
+      final stub = GreeterClient(channel);
+
+      Stream<HelloRequest> requestStream() async* {
+        yield HelloRequest()..name = 'taro';
+        _log.value = [..._log.value, 'Greeter client streaming send: taro'];
+        await Future.delayed(const Duration(milliseconds: 3000));
+        yield HelloRequest()..name = 'hanako';
+        _log.value = [..._log.value, 'Greeter client streaming send: hanako'];
+        await Future.delayed(const Duration(milliseconds: 3000));
+        _log.value = [..._log.value, 'Greeter client streaming close'];
+      }
+
+      final response = await stub.sayHelloToMany(requestStream());
+      _log.value = [
+        ..._log.value,
+        'Greeter client streaming received: ${response.message}'
+      ];
     }
 
     return Scaffold(
@@ -78,7 +106,7 @@ class MyHomePage extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.end, // FABを右端に配置
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
                   _unary();
@@ -88,13 +116,23 @@ class MyHomePage extends HookConsumerWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
                   _serverStream();
                 },
                 tooltip: 'server stream',
                 child: const Text('server stream'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  _clientStream();
+                },
+                tooltip: 'client stream',
+                child: const Text('client stream'),
               ),
             ),
           ],

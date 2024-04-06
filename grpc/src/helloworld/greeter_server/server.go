@@ -39,8 +39,9 @@ func (s *server) SayHelloAgain(in *pb.HelloRequest, stream pb.Greeter_SayHelloAg
 			log.Fatalf("failed to send: %v", err)
 			return err
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
+	log.Printf("Closed SayHelloAgain")
 	return nil
 }
 
@@ -51,6 +52,7 @@ func (s *server) SayHelloToMany(stream pb.Greeter_SayHelloToManyServer) error {
 		in, err := stream.Recv()
 		if err == io.EOF {
 			joinedString := strings.Join(slice, ", ")
+			log.Printf("Closed SayHelloToMany")
 			return stream.SendAndClose(&pb.HelloResponse{
 				Message: "Hello! " + joinedString,
 			})
