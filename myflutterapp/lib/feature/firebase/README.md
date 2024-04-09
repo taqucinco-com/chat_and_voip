@@ -66,3 +66,7 @@ Future<void> main() async {
   runApp(const AuthExampleApp());
 }
 ```
+
++web対応を行う場合は以下のリンクを参考にする。
+
+https://pub.dev/packages/google_sign_in_web#web-integration

@@ -58,6 +58,7 @@ class SettingsPage extends HookConsumerWidget {
       print(e.message);
       return null;
     } catch (e) {
+      print(e);
       rethrow;
     }
   }
