@@ -10,18 +10,18 @@ class SettingsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userProvider);
+    final user = ref.watch(authStateChangesProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings'),
       ),
       body: Center(
-        child: user != null
+        child: user.value != null
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Logged in as: ${user.email}'),
+                  Text('Logged in as: ${user.value?.email}'),
                   ElevatedButton(
                     onPressed: _signOut,
                     child: Text('Logout'),
@@ -68,18 +68,6 @@ class SettingsPage extends HookConsumerWidget {
   }
 }
 
-final userProvider = Provider<User?>((ref) {
-  return auth.currentUser;
-  // final auth = FirebaseAuth.instance;
-
-  // auth.authStateChanges()
-  // .listen((User? user) {
-  //   if (user == null) {
-  //     print('User is currently signed out!');
-  //   } else {
-  //     print('User is signed in!');
-  //   }
-  // });
-
-  // return auth.currentUser;
+final authStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
+  return FirebaseAuth.instance.authStateChanges();
 });
