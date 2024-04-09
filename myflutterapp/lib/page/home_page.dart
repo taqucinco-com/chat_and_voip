@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:myflutterapp/component/chat_tile.dart';
 
 class HomePage extends HookConsumerWidget {
   @override
@@ -13,7 +14,7 @@ class HomePage extends HookConsumerWidget {
     final allMessages = [...myMessages.value, ...yourMessages.value]
       ..sort((a, b) => a.$1.compareTo(b.$1));
     final controller = useScrollController();
-
+    
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (allMessages.isNotEmpty) {
@@ -24,6 +25,7 @@ class HomePage extends HookConsumerWidget {
           );
         }
       });
+      return null;
     }, [allMessages]);
 
     return Scaffold(
@@ -39,7 +41,7 @@ class HomePage extends HookConsumerWidget {
           itemBuilder: (context, index) {
             final message = allMessages[index];
             final isMine = myMessages.value.contains(message);
-            return _createWord(message, isMine);
+            return ChatTile(message: message, isMine: isMine);
           },
         ),
       ),
@@ -75,38 +77,6 @@ class HomePage extends HookConsumerWidget {
                 ];
               },
               child: const Text('Yours'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _createWord((DateTime date, String word) message, bool isMine) {
-    return Align(
-      alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        margin: isMine
-            ? const EdgeInsets.only(
-                left: 56.0, right: 8.0, top: 4.0, bottom: 4.0)
-            : const EdgeInsets.only(
-                left: 8.0, right: 56.0, top: 4.0, bottom: 4.0),
-        decoration: BoxDecoration(
-          color: isMine ? Colors.blue[200] : Colors.grey[200],
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(message.$2),
-            const SizedBox(height: 4.0),
-            Text(
-              DateFormat('yyyy-MM-dd hh:mm:ss').format(message.$1),
-              style: TextStyle(
-                fontSize: 10.0,
-                color: Colors.grey[600],
-              ),
             ),
           ],
         ),

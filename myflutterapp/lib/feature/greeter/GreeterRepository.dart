@@ -104,7 +104,7 @@ Stream<String> helloChat() async* {
     await channel.shutdown();
   }
 
-  Stream<HelloResponse> chat(Stream<HelloRequest> request) {
+  Stream<HelloResponse> establishChat(Stream<HelloRequest> request) {
     final channel = ClientChannel(
       'localhost',
       port: 50051,
@@ -113,19 +113,13 @@ Stream<String> helloChat() async* {
     final stub = GreeterClient(channel);
 
     final controller = StreamController<HelloResponse>();
-    request.listen((HelloRequest req) async {
-      try {
-        final response = await stub.sayHello(req);
-        controller.add(response);
-      } catch (e) {
-        print('Caught error: $e');
-        controller.addError(e);
-      } finally {
-        await channel.shutdown();
-      }
-    });
+    final response = stub.sayChat(request);
+
+    controller.onCancel = () async {
+      await response.cancel();
+      await channel.shutdown();
+    };
 
     return controller.stream;
   }
-
 }
