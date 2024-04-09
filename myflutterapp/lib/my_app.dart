@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
               GoRoute(
                 path: '/',
                 builder: (BuildContext context, GoRouterState state) =>
-                    const HomePage(title: 'Chat'),
+                    HomePage(),
                 routes: const [],
               ),
             ],

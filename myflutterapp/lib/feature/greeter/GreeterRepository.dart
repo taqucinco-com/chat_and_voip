@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:grpc/grpc.dart';
 import 'package:myflutterapp/src/generated/helloworld.pbgrpc.dart';
 
@@ -101,4 +103,29 @@ Stream<String> helloChat() async* {
   } finally {
     await channel.shutdown();
   }
+
+  Stream<HelloResponse> chat(Stream<HelloRequest> request) {
+    final channel = ClientChannel(
+      'localhost',
+      port: 50051,
+      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+    );
+    final stub = GreeterClient(channel);
+
+    final controller = StreamController<HelloResponse>();
+    request.listen((HelloRequest req) async {
+      try {
+        final response = await stub.sayHello(req);
+        controller.add(response);
+      } catch (e) {
+        print('Caught error: $e');
+        controller.addError(e);
+      } finally {
+        await channel.shutdown();
+      }
+    });
+
+    return controller.stream;
+  }
+
 }
