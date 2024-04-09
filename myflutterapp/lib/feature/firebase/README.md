@@ -1,5 +1,7 @@
 https://firebase.google.com/docs/flutter/setup?hl=ja&_gl=1*1dnjob9*_up*MQ..*_ga*MTg2MTMzNDU4LjE3MTI0OTI4Nzc.*_ga_CW55HF8NVT*MTcxMjQ5Mjg3Ny4xLjAuMTcxMjQ5Mjg3Ny4wLjAuMA..&platform=ios
 
+// https://firebase.google.com/docs/auth/flutter/errors?hl=ja&_gl=1*1lpanqz*_up*MQ..*_ga*MTQyMzY1MTIwNi4xNzEyNjU3NjMw*_ga_CW55HF8NVT*MTcxMjY1NzYyOS4xLjAuMTcxMjY1NzYyOS4wLjAuMA..
+
 https://pub.dev/packages/firebase_auth
 
 ```
@@ -12,6 +14,7 @@ $ flutterfire configure
 
 - DefaultFirebaseOptionsがlibフォルダ直下に作られる
 - /ios, /androidなどのフォルダ内にFirebase関連の設定ファイルが作られる。
+- open ios/Runner.xcworkspaceを起動して `プロジェクト > TARGET > Runner > Info > URL Types > URL SchemesにREVERSED_CLIENT_IDを入れる
 
 https://github.com/firebase/flutterfire/blob/master/packages/firebase_auth/firebase_auth/example/lib/main.dart
 のコードで初期化する。

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/firebase_options.dart';
 import 'package:myflutterapp/my_app.dart';
 
@@ -21,5 +22,9 @@ Future<void> main() async {
     await auth.useAuthEmulator('localhost', 9099);
   }
 
-  runApp(MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }

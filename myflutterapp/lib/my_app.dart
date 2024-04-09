@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myflutterapp/page/home_page.dart';
 import 'package:myflutterapp/page/debug_page.dart';
+import 'package:myflutterapp/page/settings_page.dart';
 
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 
@@ -52,6 +53,15 @@ class MyApp extends StatelessWidget {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (BuildContext context, GoRouterState state) =>
+                    const SettingsPage(),
+              ),
+            ],
+          ),
         ],
       ),
     ],
@@ -82,6 +92,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Debug'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
         currentIndex: navigationShell.currentIndex,
         onTap: (int index) => _onTap(context, index),
