@@ -27,6 +27,9 @@ class HomePage extends HookConsumerWidget {
     final textEditingController = useTextEditingController();
 
     useEffect(() {
+      responseStream.handleError((e) {
+        print(e);
+      });
       final subscription = responseStream.listen((response) {
         yourMessages.value = [
           ...yourMessages.value,
@@ -49,22 +52,33 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, [allMessages]);
 
+    ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+      return Text("Error");
+    };
+    FlutterError.onError = (details) {
+      print(details);
+    };
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('会話'),
       ),
-      body: Scrollbar(
-        controller: scrollController,
-        child: ListView.builder(
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scrollbar(
           controller: scrollController,
-          scrollDirection: Axis.vertical,
-          itemCount: allMessages.length,
-          itemBuilder: (context, index) {
-            final message = allMessages[index];
-            final isMine = myMessages.value.contains(message);
-            return ChatTile(message: message, isMine: isMine);
-          },
+          child: ListView.builder(
+            controller: scrollController,
+            scrollDirection: Axis.vertical,
+            itemCount: allMessages.length,
+            itemBuilder: (context, index) {
+              final message = allMessages[index];
+              final isMine = myMessages.value.contains(message);
+              return ChatTile(message: message, isMine: isMine);
+            },
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(

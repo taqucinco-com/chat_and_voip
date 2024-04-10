@@ -108,25 +108,30 @@ Stream<String> helloChat() async* {
 }
 
 Stream<HelloResponse> establishChat(Stream<HelloRequest> request) {
-  final channel = ClientChannel(
-    'localhost',
-    port: 50051,
-    options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-  );
-  final stub = GreeterClient(channel);
+  try {
+    final channel = ClientChannel(
+      'localhost',
+      port: 50051,
+      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+    );
+    final stub = GreeterClient(channel);
 
-  final controller = StreamController<HelloResponse>();
-  final response = stub.sayChat(request);
+    final controller = StreamController<HelloResponse>();
+    final response = stub.sayChat(request);
 
-  final subscription = response.listen((value) {
-    controller.sink.add(value);
-  });
+    final subscription = response.listen((value) {
+      controller.sink.add(value);
+    });
 
-  controller.onCancel = () async {
-    await subscription.cancel();
-    await response.cancel();
-    await channel.shutdown();
-  };
+    controller.onCancel = () async {
+      await subscription.cancel();
+      await response.cancel();
+      await channel.shutdown();
+    };
 
-  return controller.stream;
+    return controller.stream;
+  } catch (e) {
+    print(e);
+    rethrow;
+  }
 }
