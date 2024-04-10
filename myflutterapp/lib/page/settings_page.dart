@@ -20,14 +20,18 @@ class SettingsPage extends HookConsumerWidget {
       body: Center(
         child: user.value != null
             ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Logged in as: ${user.value?.email}'),
-                  ElevatedButton(
-                    onPressed: _signOut,
-                    child: const Text('Logout'),
-                  ),
-                ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Logged in as: ${user.value?.email}'),
+                ElevatedButton(
+                onPressed: _signOut,
+                child: const Text('Logout'),
+                ),
+                ElevatedButton(
+                onPressed: _deleteAccount,
+                child: const Text('Delete Account'),
+                ),
+              ],
               )
             : ElevatedButton(
                 onPressed: _signInWithGoogle,
@@ -66,6 +70,23 @@ class SettingsPage extends HookConsumerWidget {
 
   Future<void> _signOut() async {
     auth.signOut();
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      // Get the current user.
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Delete the user.
+      if (user != null) {
+        await user.delete();
+        print('User successfully deleted!');
+      } else {
+        print('No user is currently signed in.');
+      }
+    } catch (e) {
+      print('Failed to delete user: $e');
+    }
   }
 }
 

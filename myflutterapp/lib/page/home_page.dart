@@ -23,6 +23,9 @@ class HomePage extends HookConsumerWidget {
         useMemoized(() => StreamController<HelloRequest>());
     final responseStream =
         useMemoized(() => establishChat(requestController.stream));
+    final scrollController = useScrollController();
+    final textEditingController = useTextEditingController();
+
     useEffect(() {
       final subscription = responseStream.listen((response) {
         yourMessages.value = [
@@ -32,8 +35,6 @@ class HomePage extends HookConsumerWidget {
       });
       return subscription.cancel;
     }, []);
-
-    final scrollController = useScrollController();
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,18 +70,31 @@ class HomePage extends HookConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
+            Expanded(
+              child: TextField(
+                controller: textEditingController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'メッセージを入力',
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8.0,
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.blue,
                 backgroundColor: Colors.white,
               ),
               onPressed: () {
-                const word = 'taro';
+                final word = textEditingController.text;
                 requestController.sink.add(HelloRequest()..name = word);
                 myMessages.value = [
                   ...myMessages.value,
                   (DateTime.now(), word)
                 ];
+                textEditingController.clear();
               },
               child: const Icon(Icons.send),
             ),
