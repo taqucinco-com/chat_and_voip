@@ -1,6 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/main.dart';
@@ -14,7 +15,7 @@ class SettingsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Center(
         child: user.value != null
@@ -24,13 +25,13 @@ class SettingsPage extends HookConsumerWidget {
                   Text('Logged in as: ${user.value?.email}'),
                   ElevatedButton(
                     onPressed: _signOut,
-                    child: Text('Logout'),
+                    child: const Text('Logout'),
                   ),
                 ],
               )
             : ElevatedButton(
                 onPressed: _signInWithGoogle,
-                child: Text('Login'),
+                child: const Text('Login'),
               ),
       ),
     );

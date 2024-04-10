@@ -13,9 +13,9 @@ class DebugPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _log = useState<List<String>>([]);
+    final log = useState<List<String>>([]);
 
-    void _unary() async {
+    void unary() async {
       final channel = ClientChannel(
         'localhost',
         port: 50051,
@@ -32,8 +32,8 @@ class DebugPage extends HookConsumerWidget {
           HelloRequest()..name = name,
           // options: CallOptions(compression: const GzipCodec()),
         );
-        _log.value = [
-          ..._log.value,
+        log.value = [
+          ...log.value,
           'Greeter unary received: ${response.message}'
         ];
       } catch (e) {
@@ -42,7 +42,7 @@ class DebugPage extends HookConsumerWidget {
       }
     }
 
-    void _serverStream() async {
+    void serverStream() async {
       final channel = ClientChannel(
         'localhost',
         port: 50051,
@@ -55,12 +55,12 @@ class DebugPage extends HookConsumerWidget {
       try {
         final request = HelloRequest()..name = name;
         await for (var response in stub.sayHelloAgain(request)) {
-          _log.value = [
-            ..._log.value,
+          log.value = [
+            ...log.value,
             'Greeter server streaming received: ${response.message}'
           ];
         }
-        _log.value = [..._log.value, 'Greeter server streaming closed'];
+        log.value = [...log.value, 'Greeter server streaming closed'];
       } catch (e) {
         print('Caught error: $e');
       } finally {
@@ -68,7 +68,7 @@ class DebugPage extends HookConsumerWidget {
       }
     }
 
-    void _clientStream() async {
+    void clientStream() async {
       final channel = ClientChannel(
         'localhost',
         port: 50051,
@@ -79,22 +79,22 @@ class DebugPage extends HookConsumerWidget {
 
       Stream<HelloRequest> requestStream() async* {
         yield HelloRequest()..name = 'taro';
-        _log.value = [..._log.value, 'Greeter client streaming send: taro'];
+        log.value = [...log.value, 'Greeter client streaming send: taro'];
         await Future.delayed(const Duration(milliseconds: 1000));
         yield HelloRequest()..name = 'hanako';
-        _log.value = [..._log.value, 'Greeter client streaming send: hanako'];
+        log.value = [...log.value, 'Greeter client streaming send: hanako'];
         await Future.delayed(const Duration(milliseconds: 1000));
-        _log.value = [..._log.value, 'Greeter client streaming close'];
+        log.value = [...log.value, 'Greeter client streaming close'];
       }
 
       final response = await stub.sayHelloToMany(requestStream());
-      _log.value = [
-        ..._log.value,
+      log.value = [
+        ...log.value,
         'Greeter client streaming received: ${response.message}'
       ];
     }
 
-    void _biDirectional() async {
+    void biDirectional() async {
       final channel = ClientChannel(
         'localhost',
         port: 50051,
@@ -105,21 +105,21 @@ class DebugPage extends HookConsumerWidget {
 
       Stream<HelloRequest> requestStream() async* {
         yield HelloRequest()..name = 'taro';
-        _log.value = [..._log.value, 'Greeter bi-directional send: taro'];
+        log.value = [...log.value, 'Greeter bi-directional send: taro'];
         await Future.delayed(const Duration(milliseconds: 5000));
         yield HelloRequest()..name = 'hanako';
-        _log.value = [..._log.value, 'Greeter bi-directional send: hanako'];
+        log.value = [...log.value, 'Greeter bi-directional send: hanako'];
         await Future.delayed(const Duration(milliseconds: 5000));
       }
 
       final responseStream = stub.sayChat(requestStream());
       await for (var response in responseStream) {
-        _log.value = [
-          ..._log.value,
+        log.value = [
+          ...log.value,
           'Greeter bi-directional received: ${response.message}'
         ];
       }
-      _log.value = [..._log.value, 'Greeter bi-directional close'];
+      log.value = [...log.value, 'Greeter bi-directional close'];
     }
 
     return Scaffold(
@@ -129,7 +129,7 @@ class DebugPage extends HookConsumerWidget {
         ),
         body: SingleChildScrollView(
           child: Column(
-            children: _log.value.map((v) => Text(v)).toList(),
+            children: log.value.map((v) => Text(v)).toList(),
           ),
         ),
         floatingActionButton: Row(
@@ -139,7 +139,7 @@ class DebugPage extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
-                  _unary();
+                  unary();
                 },
                 tooltip: 'unary',
                 child: const Text('unary'),
@@ -149,7 +149,7 @@ class DebugPage extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
-                  _serverStream();
+                  serverStream();
                 },
                 tooltip: 'server stream',
                 child: const Text('server stream'),
@@ -159,7 +159,7 @@ class DebugPage extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
-                  _clientStream();
+                  clientStream();
                 },
                 tooltip: 'client stream',
                 child: const Text('client stream'),
@@ -169,7 +169,7 @@ class DebugPage extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                 onPressed: () async {
-                  _biDirectional();
+                  biDirectional();
                 },
                 tooltip: 'bi-directional',
                 child: const Text('bi-directional'),

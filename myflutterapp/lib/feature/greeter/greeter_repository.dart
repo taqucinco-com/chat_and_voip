@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:grpc/grpc.dart';
@@ -103,23 +105,28 @@ Stream<String> helloChat() async* {
   } finally {
     await channel.shutdown();
   }
+}
 
-  Stream<HelloResponse> establishChat(Stream<HelloRequest> request) {
-    final channel = ClientChannel(
-      'localhost',
-      port: 50051,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
-    final stub = GreeterClient(channel);
+Stream<HelloResponse> establishChat(Stream<HelloRequest> request) {
+  final channel = ClientChannel(
+    'localhost',
+    port: 50051,
+    options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+  );
+  final stub = GreeterClient(channel);
 
-    final controller = StreamController<HelloResponse>();
-    final response = stub.sayChat(request);
+  final controller = StreamController<HelloResponse>();
+  final response = stub.sayChat(request);
 
-    controller.onCancel = () async {
-      await response.cancel();
-      await channel.shutdown();
-    };
+  final subscription = response.listen((value) {
+    controller.sink.add(value);
+  });
 
-    return controller.stream;
-  }
+  controller.onCancel = () async {
+    await subscription.cancel();
+    await response.cancel();
+    await channel.shutdown();
+  };
+
+  return controller.stream;
 }
