@@ -6,8 +6,10 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Print(r)
-	fmt.Fprintf(w, "Hello, World!")
+	w.Header().Set("Content-Type", "application/json")
+	auth := r.Header.Get("Authorization")
+	fmt.Println("Authorization: ", auth)
+	fmt.Fprint(w, `{"message": "hello, golang"}`)
 }
 
 func main() {

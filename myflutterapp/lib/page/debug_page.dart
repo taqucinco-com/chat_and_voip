@@ -1,7 +1,9 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_print
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
+import 'package:myflutterapp/feature/auth/auth_proxy.dart';
 import 'package:myflutterapp/src/generated/helloworld.pbgrpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -122,6 +124,20 @@ class DebugPage extends HookConsumerWidget {
       log.value = [...log.value, 'Greeter bi-directional close'];
     }
 
+    void testIdToken() async {
+      final dio = Dio();
+      final idToken = await getIdToken() ?? "";
+      final response = await dio.get(
+        'http://localhost:8080',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $idToken',
+          },
+        ),
+      );
+      log.value = [...log.value, 'Response: ${response.data}'];
+    }
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -173,6 +189,16 @@ class DebugPage extends HookConsumerWidget {
                 },
                 tooltip: 'bi-directional',
                 child: const Text('bi-directional'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  testIdToken();
+                },
+                tooltip: 'id token',
+                child: const Text('id token'),
               ),
             ),
           ],

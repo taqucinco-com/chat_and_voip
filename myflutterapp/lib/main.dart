@@ -13,18 +13,17 @@ late final FirebaseAuth auth;
 bool shouldUseFirebaseEmulator = false;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  app = await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  auth = FirebaseAuth.instanceFor(app: app);
-
-  if (shouldUseFirebaseEmulator) {
-    await auth.useAuthEmulator('localhost', 9099);
-  }
 
   runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    app = await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    auth = FirebaseAuth.instanceFor(app: app);
+
+    if (shouldUseFirebaseEmulator) {
+      await auth.useAuthEmulator('localhost', 9099);
+    }
     runApp(
       ProviderScope(
         child: MyApp(),
