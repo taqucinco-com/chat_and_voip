@@ -53,7 +53,7 @@ class HomePage extends HookConsumerWidget {
     }, [allMessages]);
 
     ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-      return Text("Error");
+      return const Text("Error");
     };
     FlutterError.onError = (details) {
       print(details);

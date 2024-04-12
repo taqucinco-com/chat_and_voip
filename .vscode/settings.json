@@ -9,5 +9,6 @@
         "protobuf",
         "riverpod",
         "unfocus"
-    ]
+    ],
+    "go.useLanguageServer": true,
 }

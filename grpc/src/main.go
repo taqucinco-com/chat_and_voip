@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"context"
-	firebase "firebase.google.com/go/v4"
+	"fmt"
 	"log"
+	"net/http"
+
+	firebase "firebase.google.com/go/v4"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -22,6 +23,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("error getting Auth client: %v\n", err)
 	}
+	fmt.Println(client)
 
 	w.Header().Set("Content-Type", "application/json")
 	auth := r.Header.Get("Authorization")
