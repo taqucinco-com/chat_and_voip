@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
+        "flutterfire",
+        "grpcurl",
         "hanako",
         "helloworld",
         "myapp",
@@ -7,8 +9,14 @@
         "pbgrpc",
         "proto",
         "protobuf",
+        "protoc",
+        "Protocl",
         "riverpod",
-        "unfocus"
+        "unfocus",
+        "xcworkspace"
     ],
     "go.useLanguageServer": true,
+    "cSpell.ignorePaths": [
+        "README.md"
+    ]
 }

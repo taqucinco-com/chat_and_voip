@@ -26,8 +26,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(client)
 
 	w.Header().Set("Content-Type", "application/json")
-	auth := r.Header.Get("Authorization")
-	fmt.Println("Authorization: ", auth)
+	idToken := r.Header.Get("Authorization")
+	fmt.Println("Authorization: ", idToken)
+
+	token, err := client.VerifyIDToken(context.Background(), idToken)
+	if err != nil {
+		log.Fatalf("error verifying ID token: %v\n", err)
+	}
+
+	log.Printf("Verified ID token: %v\n", token)
 	fmt.Fprint(w, `{"message": "hello, golang"}`)
 }
 
