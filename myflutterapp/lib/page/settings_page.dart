@@ -23,11 +23,15 @@ class SettingsPage extends HookConsumerWidget {
                 children: [
                   Text('Logged in as: ${user.value?.email}'),
                   ElevatedButton(
-                    onPressed: () => signOut(),
+                    onPressed: () async => await getIdToken(),
+                    child: const Text('idToken'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async => await signOut(),
                     child: const Text('Logout'),
                   ),
                   ElevatedButton(
-                    onPressed: () => deleteAccount(),
+                    onPressed: () async => await deleteAccount(),
                     child: const Text('Delete Account'),
                   ),
                 ],

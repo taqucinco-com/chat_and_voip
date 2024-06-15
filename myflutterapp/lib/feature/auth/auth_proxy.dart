@@ -66,7 +66,7 @@ Future<String?> getIdToken() async {
     // Get the idToken of the user.
     if (user != null) {
       String? idToken = await user.getIdToken();
-      print('User idToken successfully retrieved!');
+      print('User idToken successfully retrieved! $idToken');
       return idToken;
     } else {
       print('No user is currently signed in.');
