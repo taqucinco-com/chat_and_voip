@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -10,8 +11,13 @@ import (
 	firebase "firebase.google.com/go/v4"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func authVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	// https://firebase.google.com/docs/admin/setup?hl=ja#go
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	// Initialize default app
 	app, err := firebase.NewApp(context.Background(), nil)
@@ -47,7 +53,54 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func chatGptHandler(w http.ResponseWriter, r *http.Request) {
+	// Prepare the request payload
+	payload := `{
+		"model": "gpt-3.5-turbo",
+		"messages": [
+			{"role": "system", "content": "You are a helpful assistant."},
+			{"role": "user", "content": "今日の蟹座の、ラッキーアイテムを1つ教えてください。回答する時の語尾の「です」や「ます」に「ワン」を追加して「...ですワン」、「...ますワン」として犬っぽく答えてください。"}
+		],
+		"temperature": 1,
+		"max_tokens": 500
+	}`
+
+	// Set the request headers
+	headers := map[string]string{
+		"Content-Type":  "application/json",
+		"Authorization": "Bearer YOUR_TOKEN",
+	}
+
+	// Send the POST request to OpenAI API
+	req, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", strings.NewReader(payload))
+	if err != nil {
+		log.Fatalf("error creating request to OpenAI API: %v\n", err)
+	}
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalf("error sending request to OpenAI API: %v\n", err)
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("error reading response body: %v\n", err)
+	}
+
+	// Set the response headers
+	w.Header().Set("Content-Type", "application/json")
+
+	// Write the response body to the HTTP response
+	w.Write(body)
+}
+
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/auth/verify", authVerifyHandler)
+	http.HandleFunc("/ai", chatGptHandler)
 	http.ListenAndServe(":8080", nil)
 }
