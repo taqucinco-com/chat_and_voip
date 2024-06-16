@@ -1,9 +1,10 @@
 module example.com/myapp
 
-go 1.22.4
+go 1.22.1
 
 require (
 	firebase.google.com/go/v4 v4.14.1
+	github.com/joho/godotenv v1.5.1
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
 )

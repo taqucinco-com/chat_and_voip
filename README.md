@@ -44,6 +44,12 @@ $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext local
 $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext localhost:50051 greeter.Greeter.SayChat
 ```
 
+```
+go run main.go auth.go chatgpt.go
+curl -i localhost:8080/auth/verify -H 'Authorization: Bearer {firebase idToken}'
+curl -i -X POST localhost:8080/ai
+```
+
 ### flutter client
 
 https://grpc.io/docs/languages/dart/quickstart/
