@@ -1,4 +1,4 @@
-package main
+package features
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	firebase "firebase.google.com/go/v4"
 )
 
-func verifyIdToken(idToken string) error {
+func VerifyIdToken(idToken string) error {
 	// https://firebase.google.com/docs/admin/setup?hl=ja#go
 
 	// Initialize default app

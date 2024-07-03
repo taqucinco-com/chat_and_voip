@@ -1,4 +1,4 @@
-package main
+package features
 
 import (
 	"io"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func callChat(prompt string, key string) (string, error) {
+func CallChat(prompt string, key string) (string, error) {
 	payload := `{
 		"model": "gpt-3.5-turbo",
 		"messages": [

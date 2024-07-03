@@ -1,6 +1,7 @@
 package main
 
 import (
+	"features"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,7 +18,7 @@ func authVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Authorization: ", idToken)
 	idToken = strings.TrimPrefix(idToken, "Bearer ")
 
-	err := verifyIdToken(idToken)
+	err := features.VerifyIdToken(idToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 	} else {
@@ -40,7 +41,7 @@ func chatGptHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	key := os.Getenv("CHATGPT_KEY")
 
-	chat, err := callChat(
+	chat, err := features.CallChat(
 		"今日の蟹座の、ラッキーアイテムを1つ教えてください。回答する時の語尾の「です」や「ます」に「ワン」を追加して「...ですワン」、「...ますワン」として犬っぽく答えてください。",
 		key,
 	)
