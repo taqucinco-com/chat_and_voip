@@ -8,11 +8,12 @@ https://grpc.io/docs/protoc-installation/
 
 ### golang server
 
-1. GOのサーバーを起動する
+1. GolangのgRPCサーバーを起動する
 
 ```
 $ docker compose exec app bash
-# go mod init example.com/myapp
+# cd example.com
+# go mod init example.com/myapp # この手順は新規で作成する場合に必要
     // go.modが作成される
 $ protoc --go_out=. --go_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
@@ -44,8 +45,11 @@ $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext local
 $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext localhost:50051 greeter.Greeter.SayChat
 ```
 
+1. GolangのREST APIサーバーを起動する
+
 ```
-go run main.go auth.go chatgpt.go
+# cd /usr/src/app/myapp
+go run main.go
 curl -i localhost:8080/auth/verify -H 'Authorization: Bearer {firebase idToken}'
 curl -i -X POST localhost:8080/ai
 ```

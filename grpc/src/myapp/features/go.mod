@@ -1,4 +1,4 @@
-module example/features
+module taqucinco.com/features
 
 go 1.22.1
 
