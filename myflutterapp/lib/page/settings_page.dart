@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/feature/auth/auth_proxy.dart';
-import 'package:myflutterapp/viewmodel/counter.dart';
 
 class SettingsPage extends HookConsumerWidget {
   const SettingsPage({super.key});
