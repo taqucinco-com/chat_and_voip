@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/feature/auth/auth_facade.dart';
 import 'package:myflutterapp/page/settings/components/settings_table_list.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends HookConsumerWidget {
   const SettingsScreen({super.key});
@@ -45,7 +44,7 @@ class SettingsScreen extends HookConsumerWidget {
             ],
           ),
         ),
-        SettingsTableList(),
+        const SettingsTableList(),
         ElevatedButton(
           onPressed: () async => await authManager.getIdToken(),
           child: const Text('idToken'),

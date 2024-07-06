@@ -60,7 +60,7 @@ class LoginScreen extends HookConsumerWidget {
         ),
         googleLoginButton,
         const SizedBox(height: 56.0),
-        SettingsTableList(),
+        const SettingsTableList(),
       ],
     );
   }
