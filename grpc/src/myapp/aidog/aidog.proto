@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package aidog;
+option go_package = "taqucinco.com/myapp/aidog";
+
+service Aidog {
+  rpc Ask (QaRequest) returns (QaResponse) {}
+}
+
+message QaRequest {
+  string question = 1;
+}
+
+message QaResponse {
+  string answer = 1;
+}

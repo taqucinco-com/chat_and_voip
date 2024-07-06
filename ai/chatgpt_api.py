@@ -42,7 +42,7 @@ response = query_gpt(
 
 response
 
-# curl -X POST https://api.openai.com/v1/chat/completions \
+# curl -i -X POST https://api.openai.com/v1/chat/completions \
 # -H "Content-Type: application/json" \
 # -H "Authorization: Bearer YOUR_TOKEN" \
 # -d '{
@@ -55,3 +55,26 @@ response
 #     "max_tokens": 500 
 # }'
 
+# {
+#   "id": "chatcmpl-hash",
+#   "object": "chat.completion",
+#   "created": 1720276000,
+#   "model": "gpt-3.5-turbo-0125",
+#   "choices": [
+#     {
+#       "index": 0,
+#       "message": {
+#         "role": "assistant",
+#         "content": "今日の蟹座のラッキーアイテムは、幸運を呼ぶネックレスですワン！"
+#       },
+#       "logprobs": null,
+#       "finish_reason": "stop"
+#     }
+#   ],
+#   "usage": {
+#     "prompt_tokens": 102,
+#     "completion_tokens": 38,
+#     "total_tokens": 140
+#   },
+#   "system_fingerprint": null
+# }
