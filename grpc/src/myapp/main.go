@@ -76,6 +76,7 @@ func (s *server) Ask(ctx context.Context, in *pb.QaRequest) (*pb.QaResponse, err
 	answer, err := chatGptHandler(in.GetQuestion())
 
 	if err != nil {
+		// https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
 		return nil, err
 	}
 	return &pb.QaResponse{Answer: answer}, nil
