@@ -63,8 +63,11 @@ Future<String?> getIdToken() async {
   try {
     // Get the current user.
     User? user = auth.currentUser;
+    
     // Get the idToken of the user.
     if (user != null) {
+      // user.displayName
+      // user.photoURL
       String? idToken = await user.getIdToken();
       print('User idToken successfully retrieved! $idToken');
       return idToken;
@@ -76,4 +79,8 @@ Future<String?> getIdToken() async {
     print('Failed to get idToken: $e');
     return null;
   }
+}
+
+User? getUser() {
+  return auth.currentUser;
 }

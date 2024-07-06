@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myflutterapp/page/home_page.dart';
 import 'package:myflutterapp/page/debug_page.dart';
-import 'package:myflutterapp/page/settings_page.dart';
+import 'package:myflutterapp/page/settings/settings_page.dart';
 
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 
@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
       routerConfig: _router,
@@ -90,10 +93,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
         // branches of the shell route, which can be fetched using
         // `navigationShell.route.branches`.
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '会話'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Debug'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
         ],
         currentIndex: navigationShell.currentIndex,
         onTap: (int index) => _onTap(context, index),

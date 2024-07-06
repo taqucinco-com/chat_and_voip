@@ -15,6 +15,7 @@
         "unfocus",
         "xcworkspace"
     ],
+    "editor.formatOnSave": true,
     "go.useLanguageServer": true,
     "cSpell.ignorePaths": [
         "README.md"
