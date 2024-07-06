@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/auth/auth_proxy.dart';
+import 'package:myflutterapp/feature/auth/auth_facade.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authManager = ref.watch(authManagerProvider);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,7 +29,7 @@ class LoginScreen extends HookConsumerWidget {
           children: [
             const SizedBox(width: 16.0),
             ElevatedButton(
-              onPressed: () => signInWithGoogle(),
+              onPressed: () async => await authManager.signInWithGoogle(),
               style: ButtonStyle(
                 minimumSize: WidgetStateProperty.all(const Size(180, 40)),
               ),

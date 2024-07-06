@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/auth/auth_proxy.dart';
+import 'package:myflutterapp/feature/auth/auth_facade.dart';
 
 class SettingsScreen extends HookConsumerWidget {
   const SettingsScreen({super.key});
@@ -8,6 +8,7 @@ class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateChangesProvider);
+    final authManager = ref.watch(authManagerProvider);
 
     final photoURL = user.value?.photoURL;
     final userName = user.value?.displayName ?? 'ユーザー';
@@ -86,7 +87,7 @@ class SettingsScreen extends HookConsumerWidget {
           ),
         ),
         ElevatedButton(
-          onPressed: () async => await getIdToken(),
+          onPressed: () async => await authManager.getIdToken(),
           child: const Text('idToken'),
         ),
       ],
@@ -104,7 +105,7 @@ class SettingsScreen extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: TextButton(
-            onPressed: () => {},
+            onPressed: () async => await authManager.deleteAccount(),
             child: Text(
               'アカウント削除',
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(

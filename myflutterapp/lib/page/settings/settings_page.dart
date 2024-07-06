@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/auth/auth_proxy.dart';
+import 'package:myflutterapp/feature/auth/auth_facade.dart';
 import 'package:myflutterapp/page/settings/screen/login_screen.dart';
 import 'package:myflutterapp/page/settings/screen/settings_screen.dart';
 
@@ -12,6 +12,7 @@ class SettingsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateChangesProvider);
+    final authManager = ref.watch(authManagerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +20,7 @@ class SettingsPage extends HookConsumerWidget {
         actions: [
           if (user.value != null)
             TextButton(
-              onPressed: () async => await signOut(),
+              onPressed: () async => await authManager.signOut(),
               child: Text(
                 'ログアウト',
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
