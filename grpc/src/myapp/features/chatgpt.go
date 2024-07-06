@@ -1,6 +1,7 @@
 package features
 
 import (
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
@@ -44,9 +45,42 @@ func CallChat(prompt string, key string) (string, error) {
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("error reading response body: %v\n", err)
+		log.Printf("Read IO error: %v\n", err)
 		return "", err
 	}
 
-	return string(body), nil
+	// Convert the response body to a string
+	bodyString := string(body)
+	// Log the response body
+	log.Printf("OpenAI API Response Body: %s\n", bodyString)
+
+	// json decode
+	var response struct {
+		ID      string `json:"id"`
+		Object  string `json:"object"`
+		Choices []struct {
+			Index   int `json:"index"`
+			Message struct {
+				Role    string `json:"role"`
+				Content string `json:"content"`
+			} `json:"message"`
+			Logprobs     interface{} `json:"logprobs"`
+			FinishReason string      `json:"finish_reason"`
+		} `json:"choices"`
+		Usage struct {
+			PromptTokens     int `json:"prompt_tokens"`
+			CompletionTokens int `json:"completion_tokens"`
+			TotalTokens      int `json:"total_tokens"`
+		} `json:"usage"`
+		SystemFingerprint interface{} `json:"system_fingerprint"`
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		log.Printf("error decoding response body: %v\n", err)
+		return "", err
+	}
+
+	content := response.Choices[0].Message.Content
+	return content, nil
 }

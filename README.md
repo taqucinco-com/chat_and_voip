@@ -49,9 +49,17 @@ $ echo -e '{"name": "taro"}\n{"name": "hanako"}' | grpcurl -d @ -plaintext local
 
 ```
 # cd /usr/src/app/myapp
-go run main.go
+go run main.go(_main copy.go_をmain.goに変える)
 curl -i localhost:8080/auth/verify -H 'Authorization: Bearer {firebase idToken}'
-curl -i -X POST localhost:8080/ai
+curl -i -X POST localhost:8080/ai -d '{"question": "c言語の歴史を１００文字程度で教えてください"}'
+```
+
+1. Golangのアプリサーバーを起動する
+
+```
+# cd /usr/src/app/myapp
+go run main.go(main.goをそのまま使う)
+grpcurl -plaintext -d '{"question": "teach me about Flutter"}' localhost:50051 aidog.Aidog.Ask
 ```
 
 ### flutter client
