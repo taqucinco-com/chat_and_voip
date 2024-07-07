@@ -59,7 +59,7 @@ curl -i -X POST localhost:8080/ai -d '{"question": "c言語の歴史を１００
 ```
 # cd /usr/src/app/myapp
 go run main.go(main.goをそのまま使う)
-grpcurl -plaintext -d '{"question": "teach me about Flutter"}' localhost:50051 aidog.Aidog.Ask
+grpcurl -plaintext -d '{"question": "teach me about Flutter"}' -rpc-header 'Authorization: Bearer {your-token}' localhost:50051 aidog.Aidog.Ask
 ```
 
 ### flutter client
@@ -78,7 +78,7 @@ $ export PATH="$PATH:$HOME/.pub-cache/bin"
 ```
 $ cd myflutterapp
 $ mkdir lib/src/generated -p
-$ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/helloworld/ helloworld.proto --plugin=protoc-gen-dart=$HOME/.pub-cache/bin/protoc-gen-dart 
+$ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/example.com/helloworld/ helloworld.proto --plugin=protoc-gen-dart=$HOME/.pub-cache/bin/protoc-gen-dart 
 ```
 ## server stream
 
@@ -93,3 +93,7 @@ $ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/helloworld/ 
 1. `server.go`にインターフェースを実装する
 
 ### flutter
+
+1. `helloworld.proto`のgolang生成コマンドを実行する
+1. `{protoファイル名}.pbgrpc.dart`から`$async.Future<$0.FooResponse> barMethod($grpc.ServiceCall call, $0.FooRequest request);`の定義を探す
+1. [dart公式サンプル](https://github.com/grpc/grpc-dart/blob/master/example/helloworld/bin/client.dart)を参考にインターフェースを実装する

@@ -3,7 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
-import 'package:myflutterapp/feature/auth/auth_facade.dart';
+import 'package:myflutterapp/feature/auth/auth_provider.dart';
 import 'package:myflutterapp/src/generated/helloworld.pbgrpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

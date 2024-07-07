@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:grpc/grpc.dart';
 import 'package:myflutterapp/src/generated/helloworld.pbgrpc.dart';
 
@@ -24,7 +23,7 @@ Future<String> hello() async {
     );
     return response.message;
   } catch (e) {
-    print('Caught error: $e');
+    if (kDebugMode) print('Caught error: $e');
     rethrow;
   } finally {
     await channel.shutdown();
@@ -46,7 +45,7 @@ Stream<String> helloAgain() async* {
       yield response.message;
     }
   } catch (e) {
-    print('Caught error: $e');
+    if (kDebugMode) print('Caught error: $e');
     rethrow;
   } finally {
     await channel.shutdown();
@@ -72,7 +71,7 @@ Future<String> helloToMany() async {
     final response = await stub.sayHelloToMany(requestStream());
     return response.message;
   } catch (e) {
-    print('Caught error: $e');
+    if (kDebugMode) print('Caught error: $e');
     rethrow;
   } finally {
     await channel.shutdown();
@@ -100,7 +99,7 @@ Stream<String> helloChat() async* {
       yield response.message;
     }
   } catch (e) {
-    print('Caught error: $e');
+    if (kDebugMode) print('Caught error: $e');
     rethrow;
   } finally {
     await channel.shutdown();
@@ -131,7 +130,7 @@ Stream<HelloResponse> establishChat(Stream<HelloRequest> request) {
 
     return controller.stream;
   } catch (e) {
-    print(e);
+    if (kDebugMode) print(e);
     rethrow;
   }
 }

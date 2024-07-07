@@ -1,8 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/auth/auth_facade.dart';
+import 'package:myflutterapp/feature/auth/auth_provider.dart';
 import 'package:myflutterapp/page/settings/screen/login_screen.dart';
 import 'package:myflutterapp/page/settings/screen/settings_screen.dart';
 

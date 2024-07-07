@@ -1,19 +1,9 @@
 // https://github.com/firebase/flutterfire/tree/master?tab=readme-ov-file
 
-// ignore_for_file: avoid_print
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/main.dart';
-
-final authStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
-  return auth.authStateChanges();
-});
-
-final authManagerProvider = Provider.autoDispose<AuthorizationFacade>((ref) {
-  return AuthorizationFacadeImpl();
-});
 
 abstract class AuthorizationFacade {
   Future<UserCredential?> signInWithGoogle();
@@ -34,14 +24,14 @@ class AuthorizationFacadeImpl implements AuthorizationFacade {
         // user.displayName
         // user.photoURL
         String? idToken = await user.getIdToken();
-        print('User idToken successfully retrieved! $idToken');
+        if (kDebugMode) print('User idToken successfully retrieved! $idToken');
         return idToken;
       } else {
-        print('No user is currently signed in.');
+        if (kDebugMode) print('No user is currently signed in.');
         return null;
       }
     } catch (e) {
-      print('Failed to get idToken: $e');
+      if (kDebugMode) print('Failed to get idToken: $e');
       return null;
     }
   }
@@ -65,11 +55,11 @@ class AuthorizationFacadeImpl implements AuthorizationFacade {
       // Once signed in, return the UserCredential
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
-      print('Failed with error code: ${e.code}');
-      print(e.message);
+      if (kDebugMode) print('Failed with error code: ${e.code}');
+      if (kDebugMode) print(e.message);
       return null;
     } catch (e) {
-      print(e);
+      if (kDebugMode) print(e);
       rethrow;
     }
   }
@@ -88,12 +78,12 @@ class AuthorizationFacadeImpl implements AuthorizationFacade {
       // Delete the user.
       if (user != null) {
         await user.delete();
-        print('User successfully deleted!');
+        if (kDebugMode) print('User successfully deleted!');
       } else {
-        print('No user is currently signed in.');
+        if (kDebugMode) print('No user is currently signed in.');
       }
     } catch (e) {
-      print('Failed to delete user: $e');
+      if (kDebugMode) print('Failed to delete user: $e');
     }
   }
 }

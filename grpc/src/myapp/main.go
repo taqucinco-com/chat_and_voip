@@ -20,6 +20,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+
+	// "google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	pb "taqucinco.com/myapp/aidog"
@@ -73,6 +75,19 @@ type server struct {
 
 func (s *server) Ask(ctx context.Context, in *pb.QaRequest) (*pb.QaResponse, error) {
 	log.Printf("Received Ask question: %v", in.GetQuestion())
+
+	// Get the Authorization header value from the gRPC metadata
+	// md, ok := metadata.FromIncomingContext(ctx)
+	// if !ok {
+	// 	return nil, status.Errorf(codes.InvalidArgument, "Failed to get metadata")
+	// }
+	// authHeaders := md.Get("authorization")
+	// if len(authHeaders) == 0 {
+	// 	return nil, status.Errorf(codes.Unauthenticated, "Authorization header is missing")
+	// }
+	// authToken := authHeaders[0]
+	// fmt.Println("Authorization: ", authToken)
+
 	answer, err := chatGptHandler(in.GetQuestion())
 
 	if err != nil {
