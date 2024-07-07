@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/auth/auth_facade.dart';
+import 'package:myflutterapp/feature/auth/auth_provider.dart';
 import 'package:myflutterapp/page/settings/components/settings_table_list.dart';
 
 class LoginScreen extends HookConsumerWidget {

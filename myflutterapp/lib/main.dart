@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,7 +14,6 @@ late final FirebaseAuth auth;
 bool shouldUseFirebaseEmulator = false;
 
 Future<void> main() async {
-
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     app = await Firebase.initializeApp(
@@ -32,6 +30,6 @@ Future<void> main() async {
       ),
     );
   }, (error, stack) {
-    print(error);
+    if (kDebugMode) print(error);
   });
 }
