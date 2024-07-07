@@ -12,7 +12,6 @@ AiDogAskInterface askFunc = (String question) async {
     port: 50051,
     options: const ChannelOptions(
       credentials: ChannelCredentials.insecure(),
-      // codecRegistry: CodecRegistry(codecs: const [GzipCodec(), IdentityCodec()]),
     ),
   );
   final stub = AidogClient(channel);
@@ -20,7 +19,6 @@ AiDogAskInterface askFunc = (String question) async {
   try {
     final response = await stub.ask(
       QaRequest()..question = question,
-      options: CallOptions(compression: const GzipCodec()),
     );
     return response.answer;
   } catch (e) {

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -17,9 +15,9 @@ class ChatTile extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         margin: isMine
             ? const EdgeInsets.only(
-                left: 56.0, right: 8.0, top: 4.0, bottom: 4.0)
+                left: 80.0, right: 8.0, top: 8.0, bottom: 8.0)
             : const EdgeInsets.only(
-                left: 8.0, right: 56.0, top: 4.0, bottom: 4.0),
+                left: 8.0, right: 80.0, top: 8.0, bottom: 8.0),
         decoration: BoxDecoration(
           color: isMine ? Colors.blue[200] : Colors.grey[200],
           borderRadius: BorderRadius.circular(8.0),
@@ -28,7 +26,7 @@ class ChatTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(message.$2),
-            const SizedBox(height: 4.0),
+            const SizedBox(height: 8.0),
             Text(
               DateFormat('yyyy-MM-dd hh:mm:ss').format(message.$1),
               style: TextStyle(
