@@ -53,7 +53,7 @@ func chatGptHandler(question string) (string, error) {
 	key := os.Getenv("CHATGPT_KEY")
 
 	chat, err := features.CallChat(
-		question+" 回答する時の語尾のが「あります」「です」や「ます」を「ワン」に変えて「...あるワン」「...だワン」、「...であるワン」として犬っぽく答えてください。",
+		question+" 回答する時の語尾のが「あります」「です」や「ます」を「ワン」に変えて「...あるワン」「...だワン」、「...であるワン」として犬っぽく答えてください。たまに語尾を「ワンワン」や「ワオン」も混ぜてください。",
 		key,
 	)
 
