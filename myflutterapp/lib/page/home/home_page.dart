@@ -68,6 +68,7 @@ class HomePage extends HookConsumerWidget {
       ),
       body: Column(
         children: [
+          const SizedBox(height: 16.0),
           Expanded(child: messageList),
           MessageBar(
             onSubmit: (text) async {
