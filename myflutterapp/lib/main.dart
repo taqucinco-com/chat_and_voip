@@ -23,8 +23,6 @@ Future<void> main() async {
     );
     auth = FirebaseAuth.instanceFor(app: app);
 
-    await Hive.initFlutter();
-
     if (shouldUseFirebaseEmulator) {
       await auth.useAuthEmulator('localhost', 9099);
     }
