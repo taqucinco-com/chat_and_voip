@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/component/chat_tile.dart';
+import 'package:myflutterapp/driver/http/client_channel_establisher_provider.dart';
 import 'package:myflutterapp/feature/aidog/aidog_provider.dart';
 import 'package:myflutterapp/page/home/components/message_bar.dart';
 
@@ -12,6 +13,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ask = ref.read(aiDogAskProvider);
+    final establish = ref.read(clientChannelEstablisherProvider);
 
     final myMessages = useState<List<(DateTime date, String word)>>([]);
     final dogMessages = useState<List<(DateTime date, String word)>>([]);
@@ -75,7 +77,7 @@ class HomePage extends HookConsumerWidget {
               myMessages.value = [...myMessages.value, (DateTime.now(), text)];
               try {
                 isSending.value = true;
-                final answer = await ask(text);
+                final answer = await ask(text, establish);
                 final answerWithEmoji = '$answer \u{1F436}';
                 dogMessages.value = [
                   ...dogMessages.value,

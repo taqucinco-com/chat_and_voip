@@ -1,13 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:grpc/grpc.dart';
+import 'package:myflutterapp/driver/http/client_channel_establisher.dart';
+import 'package:myflutterapp/feature/aidog/aidog_controller.dart';
 import 'package:myflutterapp/src/generated/aidog.pbgrpc.dart';
 
-typedef AiDogAskInterface = Future<String> Function(String question);
-
-AiDogAskInterface askFunc = (String question) async {
-  final channel = ClientChannel(
+AiDogAskInterface askFunc =
+    (String question, ClientChannelEstablisher establishChannel) async {
+  final channel = establishChannel(
     'localhost',
     port: 50051,
     options: const ChannelOptions(

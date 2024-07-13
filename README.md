@@ -97,3 +97,9 @@ $ protoc --dart_out=grpc:lib/src/generated --proto_path ../grpc/src/example.com/
 1. `helloworld.proto`のgolang生成コマンドを実行する
 1. `{protoファイル名}.pbgrpc.dart`から`$async.Future<$0.FooResponse> barMethod($grpc.ServiceCall call, $0.FooRequest request);`の定義を探す
 1. [dart公式サンプル](https://github.com/grpc/grpc-dart/blob/master/example/helloworld/bin/client.dart)を参考にインターフェースを実装する
+
+## アプリ
+
+```
+dart pub run build_runner build
+```
