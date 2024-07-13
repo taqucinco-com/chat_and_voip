@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/db/hive_box.dart';
+import 'package:myflutterapp/driver/db/hive_box.dart';
 import 'package:myflutterapp/feature/id/ulid_generator.dart';
 import 'package:myflutterapp/feature/message/domain/message_entity.dart';
 import 'package:myflutterapp/feature/message/gateway/message_dao.dart';

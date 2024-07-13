@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:myflutterapp/feature/db/hive_box.dart';
+import 'package:myflutterapp/driver/db/hive_box.dart';
 import 'package:myflutterapp/feature/message/gateway/message_dao.dart';
 import 'package:myflutterapp/feature/message/gateway/message_repository.dart';
 import 'package:myflutterapp/firebase_options.dart';
