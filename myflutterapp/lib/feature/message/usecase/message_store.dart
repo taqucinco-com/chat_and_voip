@@ -19,7 +19,7 @@ final aiMessagesProvider =
   return AiMessagesNotifier();
 });
 
-final messageProvider = Provider<List<MessageEither>>((ref) {
+final messagesProvider = Provider<List<MessageEither>>((ref) {
   final mine = ref.watch(myMessagesProvider);
   final ai = ref.watch(aiMessagesProvider);
 
