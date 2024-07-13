@@ -11,6 +11,7 @@ import 'package:myflutterapp/feature/message/gateway/message_dao.dart';
 import 'package:myflutterapp/feature/message/gateway/message_repository.dart';
 import 'package:myflutterapp/firebase_options.dart';
 import 'package:myflutterapp/my_app.dart';
+import 'package:path_provider/path_provider.dart';
 
 late final FirebaseApp app;
 late final FirebaseAuth auth;
@@ -25,8 +26,10 @@ Future<void> main() async {
     );
     auth = FirebaseAuth.instanceFor(app: app);
 
-    await Hive.initFlutter();
-    Hive.registerAdapter(MessageDaoAdapter());
+    final dir = await getApplicationDocumentsDirectory();
+    Hive
+      ..init(dir.path)
+      ..registerAdapter(MessageDaoAdapter());
 
     final messageBox = await Hive.openBox(messageDaoBoxName);
 

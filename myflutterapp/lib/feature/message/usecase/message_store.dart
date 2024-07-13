@@ -35,5 +35,5 @@ final messagesProvider = Provider<List<MessageEither>>((ref) {
   final mine = ref.watch(myMessagesProvider);
   final ai = ref.watch(aiMessagesProvider);
 
-  return [...mine, ...ai];
+  return [...mine, ...ai]..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 });

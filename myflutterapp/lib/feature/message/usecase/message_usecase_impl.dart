@@ -16,7 +16,7 @@ class MessageUseCaseImpl implements MessageUseCase {
     final repo = ref.read(messageRepositoryProvider);
     final messages = await repo.readQuery(offset: 0, limit: 20);
 
-    final mine = messages.fold([] as List<MyMessageEntity>, (acc, current) {
+    final mine = messages.fold(<MyMessageEntity>[], (acc, current) {
       final status = current.status;
       if (!current.isMine || status == null) return acc;
       return [
@@ -32,7 +32,7 @@ class MessageUseCaseImpl implements MessageUseCase {
     final myMessagesNotifier = ref.read(myMessagesProvider.notifier);
     myMessagesNotifier.add(mine);
 
-    final ai = messages.fold([] as List<AiMessageEntity>, (acc, current) {
+    final ai = messages.fold(<AiMessageEntity>[], (acc, current) {
       if (current.isMine) return acc;
       return [
         ...acc,

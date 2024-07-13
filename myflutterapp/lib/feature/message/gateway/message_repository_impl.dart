@@ -37,7 +37,7 @@ class MessageRepositoryImpl implements MessageRepository {
       status: status,
       createdAt: DateTime.now(),
     );
-    box.put(message.id, message);
+    await box.put(message.id, message);
 
     return message;
   }
@@ -58,7 +58,7 @@ class MessageRepositoryImpl implements MessageRepository {
       createdAt: message.createdAt,
     );
     message.delete();
-    box.put(id, updated);
+    await box.put(id, updated);
     return updated;
   }
 }

@@ -42,7 +42,7 @@ class MessageDao extends HiveObject
   List<ValidationException> validate() => [
         if (isMine && status == null)
           ValidationException('status must not be null when isMine is true'),
-        if (text.length >= 200)
-          ValidationException('text must be equal or less than 200')
+        if (text.length >= 1000)
+          ValidationException('text must be equal or less than number')
       ];
 }

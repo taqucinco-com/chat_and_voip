@@ -1,6 +1,9 @@
 enum MessageStatus {
-  sending,
-  replied,
+  sending(0),
+  replied(1);
+
+  const MessageStatus(this.code);
+  final int code;
 }
 
 typedef MessageId = String;
@@ -15,14 +18,14 @@ abstract class MessageEntityWithStatus {
   MessageStatus? get status;
 }
 
-sealed class MessageEither {}
+sealed class MessageEither implements MessageEntity {}
 
 abstract class MyMessageEntity extends MessageEither
-    implements MessageEntity, MessageEntityWithStatus {
+    implements MessageEntityWithStatus {
   MyMessageEntity copyWith({String? text, MessageStatus? status});
 }
 
-abstract class AiMessageEntity extends MessageEither implements MessageEntity {}
+abstract class AiMessageEntity extends MessageEither {}
 
 class MyMessageObject implements MyMessageEntity {
   @override
