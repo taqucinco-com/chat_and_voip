@@ -34,7 +34,7 @@ class MessageRepositoryImpl implements MessageRepository {
       id: ulidGen(),
       text: text,
       isMine: isMine,
-      status: status,
+      status: status?.code,
       createdAt: DateTime.now(),
     );
     await box.put(message.id, message);
@@ -54,7 +54,7 @@ class MessageRepositoryImpl implements MessageRepository {
       id: id,
       text: text ?? message.text,
       isMine: isMine ?? message.isMine,
-      status: status ?? message.status,
+      status: status?.code ?? message.status,
       createdAt: message.createdAt,
     );
     message.delete();

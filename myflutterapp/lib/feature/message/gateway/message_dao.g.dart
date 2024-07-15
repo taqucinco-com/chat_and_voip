@@ -20,7 +20,7 @@ class MessageDaoAdapter extends TypeAdapter<MessageDao> {
       id: fields[0] as String,
       text: fields[1] as String,
       isMine: fields[2] as bool,
-      status: fields[3] as MessageStatus?,
+      status: fields[3] as int?,
       createdAt: fields[4] as DateTime,
     );
   }

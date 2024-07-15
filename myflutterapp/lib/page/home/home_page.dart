@@ -23,13 +23,13 @@ class HomePage extends HookConsumerWidget {
     final establish = ref.read(clientChannelEstablisherProvider);
     // final myMessages = useState<List<(DateTime date, String word)>>([]);
     // final dogMessages = useState<List<(DateTime date, String word)>>([]);
-    // final allMessages = [...myMessages.value, ...dogMessages.value]
-    //   ..sort((a, b) => a.$1.compareTo(b.$1));
 
     final scrollController = useScrollController();
 
     useEffect(() {
-      useCase.initialLoad().then((length) => print("hoge: $length"));
+      useCase
+          .initialLoad()
+          .then((length) => print("initialLoad length: $length"));
       return null;
     }, []);
 

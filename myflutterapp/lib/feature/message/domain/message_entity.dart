@@ -1,70 +1,49 @@
+import 'package:myflutterapp/framework/exception/validation_exception.dart';
+
 enum MessageStatus {
   sending(0),
-  replied(1);
+  pended(1),
+  replied(2);
 
   const MessageStatus(this.code);
   final int code;
+
+  factory MessageStatus.fromCode(int code) {
+    switch (code) {
+      case 0:
+        return sending;
+      case 1:
+        return pended;
+      case 2:
+        return replied;
+      default:
+        throw ValidationException('Unknown MessageStatus code: $code');
+    }
+  }
 }
 
 typedef MessageId = String;
 
-abstract class MessageEntity {
+abstract interface class MessageEntity {
   MessageId get id;
   String get text;
   DateTime get createdAt;
+
+  // List<ValidationException> validate();
 }
 
-abstract class MessageEntityWithStatus {
-  MessageStatus? get status;
+abstract interface class MessageEntityWithStatus {
+  MessageStatus get status;
 }
 
 sealed class MessageEither implements MessageEntity {}
 
-abstract class MyMessageEntity extends MessageEither
+abstract interface class MyMessageEntity extends MessageEither
     implements MessageEntityWithStatus {
   MyMessageEntity copyWith({String? text, MessageStatus? status});
 }
 
-abstract class AiMessageEntity extends MessageEither {}
-
-class MyMessageObject implements MyMessageEntity {
-  @override
-  final MessageId id;
-  @override
-  final String text;
-  @override
-  final DateTime createdAt;
-  @override
-  final MessageStatus? status;
-
-  MyMessageObject({
-    required this.id,
-    required this.text,
-    required this.createdAt,
-    required this.status,
-  });
-
-  @override
-  MyMessageEntity copyWith({String? text, MessageStatus? status}) =>
-      MyMessageObject(
-        id: id,
-        text: text ?? this.text,
-        createdAt: createdAt,
-        status: status ?? this.status,
-      );
-}
-
-class AiMessageObject implements AiMessageEntity {
-  @override
-  final MessageId id;
-  @override
-  final String text;
-  @override
-  final DateTime createdAt;
-
-  AiMessageObject({
-    required this.id,
-    required this.text,
-    required this.createdAt,
-  });
+abstract interface class AiMessageEntity extends MessageEither {
+  // @override
+  // List<ValidationException> validate() => [];
 }

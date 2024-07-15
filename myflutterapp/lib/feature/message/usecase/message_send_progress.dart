@@ -7,6 +7,10 @@ class MessageSendProgressSending extends MessageSendProgress {
   MessageSendProgressSending(this.entity);
 }
 
+class MessageSendProgressPended extends MessageSendProgress {
+  MessageSendProgressPended();
+}
+
 class MessageSendProgressReplied extends MessageSendProgress {
   final MessageEntity reply;
   MessageSendProgressReplied(this.reply);

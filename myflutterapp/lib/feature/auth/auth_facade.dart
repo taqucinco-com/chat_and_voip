@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:myflutterapp/main.dart';
 
-abstract class AuthorizationFacade {
+abstract interface class AuthorizationFacade {
   Future<UserCredential?> signInWithGoogle();
   Future<void> signOut();
   Future<String?> getIdToken();

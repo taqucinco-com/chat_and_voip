@@ -1,6 +1,6 @@
 import 'package:myflutterapp/feature/message/usecase/message_send_progress.dart';
 
-abstract class MessageUseCase {
+abstract interface class MessageUseCase {
   /// 今までの会話の初回ロードを行いメッセージの総数[int]を返す
   Future<int> initialLoad();
 

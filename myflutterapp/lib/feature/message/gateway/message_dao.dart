@@ -1,12 +1,12 @@
 import 'package:hive/hive.dart';
 import 'package:myflutterapp/feature/message/domain/message_entity.dart';
+import 'package:myflutterapp/feature/message/usecase/message_data_access.dart';
 import 'package:myflutterapp/framework/exception/validation_exception.dart';
 
 part 'message_dao.g.dart';
 
 @HiveType(typeId: 0)
-class MessageDao extends HiveObject
-    implements MessageEntity, MessageEntityWithStatus {
+class MessageDao extends HiveObject implements MessageDataAccess {
   @override
   @HiveField(0)
   final MessageId id;
@@ -15,12 +15,13 @@ class MessageDao extends HiveObject
   @HiveField(1)
   final String text;
 
+  @override
   @HiveField(2)
   final bool isMine;
 
   @override
   @HiveField(3)
-  final MessageStatus? status;
+  final int? status;
 
   @override
   @HiveField(4)
