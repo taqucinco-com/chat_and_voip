@@ -9,7 +9,7 @@ class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateChangesProvider);
-    final authManager = ref.watch(authManagerProvider);
+    final authFacade = ref.watch(authFacadeProvider);
 
     final photoURL = user.value?.photoURL;
     final userName = user.value?.displayName ?? 'ユーザー';
@@ -46,7 +46,7 @@ class SettingsScreen extends HookConsumerWidget {
         ),
         const SettingsTableList(),
         ElevatedButton(
-          onPressed: () async => await authManager.getIdToken(),
+          onPressed: () async => await authFacade.getIdToken(),
           child: const Text('idToken'),
         ),
       ],
@@ -55,7 +55,7 @@ class SettingsScreen extends HookConsumerWidget {
     final lower = Padding(
       padding: const EdgeInsets.all(16.0),
       child: TextButton(
-        onPressed: () async => await authManager.deleteAccount(),
+        onPressed: () async => await authFacade.deleteAccount(),
         child: Text(
           'アカウント削除',
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(

@@ -6,20 +6,18 @@ import 'package:myflutterapp/feature/message/gateway/message_dao.dart';
 import 'package:myflutterapp/feature/message/gateway/message_repository.dart';
 
 class MessageRepositoryImpl implements MessageRepository {
-  final ProviderRef<dynamic> ref;
+  final Ref ref;
   MessageRepositoryImpl(this.ref);
 
   @override
   Future<MessageDao?> read(MessageId id) async {
-    final box = ref.read(messageBoxProvider);
-    final message = box.get(id);
+    final message = ref.read(messageBoxProvider).get(id);
     return message;
   }
 
   @override
   Future<List<MessageDao>> readQuery({int? limit, int? offset}) async {
-    final box = ref.read(messageBoxProvider);
-    final iterator = box.valuesBetween(
+    final iterator = ref.read(messageBoxProvider).valuesBetween(
         startKey: offset ?? 0, endKey: (offset ?? 0) + (limit ?? 100));
     final messages = iterator.map((v) => v as MessageDao).toList();
     return messages;
@@ -28,16 +26,14 @@ class MessageRepositoryImpl implements MessageRepository {
   @override
   Future<MessageDao> create(
       String text, bool isMine, MessageStatus? status) async {
-    final box = ref.read(messageBoxProvider);
-    final ulidGen = ref.read(ulidGeneratorProvider);
     final message = MessageDao(
-      id: ulidGen(),
+      id: ref.read(ulidGeneratorProvider)(),
       text: text,
       isMine: isMine,
       status: status?.code,
       createdAt: DateTime.now(),
     );
-    await box.put(message.id, message);
+    await ref.read(messageBoxProvider).put(message.id, message);
 
     return message;
   }
@@ -45,7 +41,6 @@ class MessageRepositoryImpl implements MessageRepository {
   @override
   Future<MessageDao?> update(MessageId id,
       {String? text, bool? isMine, MessageStatus? status}) async {
-    final box = ref.read(messageBoxProvider);
     final message = await read(id);
 
     if (message == null) return null;
@@ -58,7 +53,7 @@ class MessageRepositoryImpl implements MessageRepository {
       createdAt: message.createdAt,
     );
     message.delete();
-    await box.put(id, updated);
+    await ref.read(messageBoxProvider).put(id, updated);
     return updated;
   }
 }

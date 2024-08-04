@@ -1,10 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/component/chat_tile.dart';
 import 'package:myflutterapp/driver/http/client_channel_establisher_provider.dart';
+import 'package:myflutterapp/feature/advertise/admob/use_interstitial_ad.dart';
+import 'package:myflutterapp/feature/advertise/advertiser.dart';
+import 'package:myflutterapp/feature/advertise/advertiser_provider.dart';
 import 'package:myflutterapp/feature/aidog/aidog_provider.dart';
+import 'package:myflutterapp/feature/auth/auth_provider.dart';
 import 'package:myflutterapp/feature/message/domain/message_entity.dart';
 import 'package:myflutterapp/feature/message/usecase/message_store.dart';
 import 'package:myflutterapp/feature/message/usecase/message_usecase_provider.dart';
@@ -15,7 +21,8 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final useCase = ref.read(messageUseCaseProvider);
+    final authState = ref.watch(authStateChangesProvider);
+    final useCase = ref.watch(messageUseCaseProvider);
     final messages = ref.watch(messagesProvider);
     final isSending = useState(false);
 
@@ -26,12 +33,8 @@ class HomePage extends HookConsumerWidget {
 
     final scrollController = useScrollController();
 
-    useEffect(() {
-      useCase
-          .initialLoad()
-          .then((length) => print("initialLoad length: $length"));
-      return null;
-    }, []);
+    final advertiser = ref.watch(advertiserProvider);
+    final interstitialAd = useFutureInterstitialAd(advertiser);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -75,35 +78,71 @@ class HomePage extends HookConsumerWidget {
       ),
     );
 
+    final chatView = Column(
+      children: [
+        const SizedBox(height: 16.0),
+        Expanded(child: messageList),
+        MessageBar(
+          onSubmit: (text) async {
+            // myMessages.value = [...myMessages.value, (DateTime.now(), text)];
+            try {
+              isSending.value = true;
+              await for (final progress in useCase.send(text)) {
+                print(progress);
+              }
+              // final answer = await ask(text, establish);
+              // final answerWithEmoji = '$answer \u{1F436}';
+              // dogMessages.value = [
+              //   ...dogMessages.value,
+              //   (DateTime.now(), answerWithEmoji),
+              // ];
+            } finally {
+              isSending.value = false;
+            }
+          },
+        ),
+      ],
+    );
+
+    final loginView = Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "このアプリでAI犬から教えてもらうにはログインが必要です。",
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(color: Theme.of(context).colorScheme.secondary),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (interstitialAd.data != null) {
+                    interstitialAd.data!.show();
+                  }
+                  // context.go('/settings');
+                },
+                child: const Text("設定に移動する"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16.0),
-          Expanded(child: messageList),
-          MessageBar(
-            onSubmit: (text) async {
-              // myMessages.value = [...myMessages.value, (DateTime.now(), text)];
-              try {
-                isSending.value = true;
-                await for (final progress in useCase.send(text)) {
-                  print(progress);
-                }
-                // final answer = await ask(text, establish);
-                // final answerWithEmoji = '$answer \u{1F436}';
-                // dogMessages.value = [
-                //   ...dogMessages.value,
-                //   (DateTime.now(), answerWithEmoji),
-                // ];
-              } finally {
-                isSending.value = false;
-              }
-            },
-          ),
-        ],
-      ),
+      body: switch (authState) {
+        AsyncError(:final error) => Text("Error: $error"),
+        AsyncData(:final value) => value != null ? chatView : loginView,
+        _ => const CircularProgressIndicator(),
+      },
     );
   }
 }

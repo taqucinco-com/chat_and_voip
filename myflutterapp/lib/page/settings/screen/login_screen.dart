@@ -9,14 +9,14 @@ class LoginScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authManager = ref.watch(authManagerProvider);
+    final authFacade = ref.watch(authFacadeProvider);
 
     final googleLoginButton = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(width: 16.0),
         ElevatedButton(
-          onPressed: () async => await authManager.signInWithGoogle(),
+          onPressed: () async => await authFacade.signInWithGoogle(),
           style: ButtonStyle(
             minimumSize: WidgetStateProperty.all(const Size(180, 40)),
           ),

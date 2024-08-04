@@ -16,7 +16,7 @@ class DebugPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final log = useState<List<String>>([]);
-    final authManager = ref.watch(authManagerProvider);
+    final authFacade = ref.watch(authFacadeProvider);
 
     void unary() async {
       final channel = ClientChannel(
@@ -127,7 +127,7 @@ class DebugPage extends HookConsumerWidget {
 
     void testIdToken() async {
       final dio = Dio();
-      final idToken = await authManager.getIdToken() ?? "";
+      final idToken = await authFacade.getIdToken() ?? "";
       final response = await dio.get(
         'http://localhost:8080',
         options: Options(

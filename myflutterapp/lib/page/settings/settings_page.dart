@@ -10,7 +10,9 @@ class SettingsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateChangesProvider);
-    final authManager = ref.watch(authManagerProvider);
+    final authFacade = ref.watch(authFacadeProvider);
+    final screen =
+        user.value != null ? const SettingsScreen() : const LoginScreen();
 
     return Scaffold(
       appBar: AppBar(
@@ -18,7 +20,7 @@ class SettingsPage extends HookConsumerWidget {
         actions: [
           if (user.value != null)
             TextButton(
-              onPressed: () async => await authManager.signOut(),
+              onPressed: () async => await authFacade.signOut(),
               child: Text(
                 'ログアウト',
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -30,8 +32,7 @@ class SettingsPage extends HookConsumerWidget {
         ],
       ),
       body: Center(
-        child:
-            user.value != null ? const SettingsScreen() : const LoginScreen(),
+        child: screen,
       ),
     );
   }

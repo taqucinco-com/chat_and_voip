@@ -9,7 +9,7 @@ import 'package:myflutterapp/feature/message/usecase/message_store.dart';
 import 'package:myflutterapp/feature/message/usecase/message_usecase.dart';
 
 class MessageInteractor with MessageAdaptor implements MessageUseCase {
-  final ProviderRef<dynamic> ref;
+  final Ref ref;
   MessageInteractor(this.ref);
 
   @override
