@@ -7,6 +7,6 @@ final authStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
   return auth.authStateChanges();
 });
 
-final authManagerProvider = Provider.autoDispose<AuthorizationFacade>((ref) {
+final authFacadeProvider = Provider.autoDispose<AuthorizationFacade>((ref) {
   return AuthorizationFacadeImpl();
 });

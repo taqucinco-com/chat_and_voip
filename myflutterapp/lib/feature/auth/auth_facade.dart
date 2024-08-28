@@ -60,7 +60,7 @@ class AuthorizationFacadeImpl implements AuthorizationFacade {
       return null;
     } catch (e) {
       if (kDebugMode) print(e);
-      rethrow;
+      return null;
     }
   }
 
