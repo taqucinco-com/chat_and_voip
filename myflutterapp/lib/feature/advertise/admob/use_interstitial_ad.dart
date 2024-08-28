@@ -6,7 +6,8 @@ import 'package:myflutterapp/feature/advertise/advertiser.dart';
 AsyncSnapshot<InterstitialAd> useFutureInterstitialAd(
   Advertiser advertiser,
 ) {
-  final interstitialAd = useFuture(advertiser.loadInterstitialAd());
+  final future = useMemoized(() => advertiser.loadInterstitialAd());
+  final interstitialAd = useFuture(future);
   useEffect(() {
     return interstitialAd.data?.dispose;
   }, []);

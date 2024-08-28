@@ -84,6 +84,13 @@ class HomePage extends HookConsumerWidget {
         Expanded(child: messageList),
         MessageBar(
           onSubmit: (text) async {
+            final result = await advertiser
+                .sendTriggerEvent(AdvertiseTriggerEventQuestion());
+            if (result) {
+              if (interstitialAd.data != null) {
+                interstitialAd.data!.show();
+              }
+            }
             // myMessages.value = [...myMessages.value, (DateTime.now(), text)];
             try {
               isSending.value = true;
@@ -121,10 +128,7 @@ class HomePage extends HookConsumerWidget {
               padding: const EdgeInsets.only(top: 16.0),
               child: ElevatedButton(
                 onPressed: () {
-                  if (interstitialAd.data != null) {
-                    interstitialAd.data!.show();
-                  }
-                  // context.go('/settings');
+                  context.go('/settings');
                 },
                 child: const Text("設定に移動する"),
               ),

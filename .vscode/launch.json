@@ -1,16 +1,31 @@
 {
     "version": "0.2.0",
     "configurations": [
-    {
-        "name": "Flutter",
-        "request": "launch",
-        "type": "dart",
-        "args": [
-        "-d",
-        "Chrome",
-        "--web-port",
-        "50000"
-        ]
-    }
+        {
+            "name": "Flutter",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "Chrome",
+                "--web-port",
+                "50000"
+            ]
+        },
+        {
+            "name": "Android Pixel 5 API 30",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "28555B1B-18C6-4ED3-8C26-FCBAB39E0B68"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Devices",
+            "configurations": [
+                "Flutter",
+                "Android Pixel 5 API 30"
+            ]
+        }
     ]
 }
