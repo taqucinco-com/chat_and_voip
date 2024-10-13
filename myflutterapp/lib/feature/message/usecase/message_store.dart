@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/feature/message/domain/message_entity.dart';
+import 'package:myflutterapp/feature/message/domain/message_object.dart';
 
 class MyMessagesNotifier extends StateNotifier<List<MyMessageEntity>> {
   MyMessagesNotifier() : super([]);
@@ -18,6 +19,15 @@ class AiMessagesNotifier extends StateNotifier<List<AiMessageEntity>> {
 
   void add(List<AiMessageEntity> entities) {
     state = [...state, ...entities];
+  }
+
+  void appendTextWithId(MessageId id, String text) {
+    state = state
+        .map((v) => (v.id == id)
+            ? AiMessageObject(
+                id: id, text: v.text + text, createdAt: v.createdAt)
+            : v)
+        .toList();
   }
 }
 

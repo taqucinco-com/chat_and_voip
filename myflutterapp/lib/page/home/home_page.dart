@@ -7,16 +7,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/component/chat_tile.dart';
 import 'package:myflutterapp/driver/http/client_channel_establisher_provider.dart';
 import 'package:myflutterapp/feature/advertise/admob/use_interstitial_ad.dart';
-import 'package:myflutterapp/feature/advertise/advertiser.dart';
 import 'package:myflutterapp/feature/advertise/advertiser_provider.dart';
 import 'package:myflutterapp/feature/aidog/aidog_provider.dart';
 import 'package:myflutterapp/feature/auth/auth_provider.dart';
 import 'package:myflutterapp/feature/message/domain/message_entity.dart';
+import 'package:myflutterapp/feature/message/domain/message_object.dart';
 import 'package:myflutterapp/feature/message/usecase/message_store.dart';
 import 'package:myflutterapp/feature/message/usecase/message_usecase_provider.dart';
 import 'package:myflutterapp/page/home/components/message_bar.dart';
 import 'package:myflutterapp/src/generated/aidog.pbgrpc.dart';
-import 'package:myflutterapp/src/generated/aidog.pbjson.dart';
+import 'package:uuid/uuid.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -26,12 +26,14 @@ class HomePage extends HookConsumerWidget {
     final authState = ref.watch(authStateChangesProvider);
     final useCase = ref.watch(messageUseCaseProvider);
     final messages = ref.watch(messagesProvider);
+    final myMessageNotifier = ref.read(myMessagesProvider.notifier);
+    final aiMessageNotifier = ref.read(aiMessagesProvider.notifier);
     final isSending = useState(false);
 
     final ask = ref.read(aiDogAskProvider);
     final establish = ref.read(clientChannelEstablisherProvider);
-    final myMessages = useState<List<(DateTime date, String word)>>([]);
-    final dogMessages = useState<List<(DateTime date, String word)>>([]);
+    // final myMessages = useState<List<(DateTime date, String word)>>([]);
+    // final dogMessages = useState<List<(DateTime date, String word)>>([]);
 
     final scrollController = useScrollController();
 
@@ -93,31 +95,39 @@ class HomePage extends HookConsumerWidget {
             //     interstitialAd.data!.show();
             //   }
             // }
-            myMessages.value = [...myMessages.value, (DateTime.now(), text)];
-            // try {
-            //   isSending.value = true;
-            //   // await for (final progress in useCase.send(text)) {
-            //   //   print(progress);
-            //   // }
+            primaryFocus?.unfocus();
+            final entity = MyMessageObject(
+              id: const Uuid().v4(),
+              text: text,
+              createdAt: DateTime.now(),
+              status: MessageStatus.sending,
+            );
 
-            //   dogMessages.value = [
-            //     ...dogMessages.value,
-            //     (DateTime.now(), ""),
-            //   ];
+            myMessageNotifier.add([entity]);
+            try {
+              isSending.value = true;
+              // await for (final progress in useCase.send(text)) {
+              //   print(progress);
+              // }
 
-            //   await for (final answer in test(text)) {
-            //     isSending.value = false;
-            //     final last = dogMessages.value.last;
-            //     final filtered =
-            //         dogMessages.value.sublist(0, dogMessages.value.length - 1);
-            //     dogMessages.value = [
-            //       ...filtered,
-            //       (last.$1, last.$2 + answer),
-            //     ];
-            //   }
-            // } finally {
-            //   isSending.value = false;
-            // }
+              final uuid = const Uuid().v4();
+              await for (final answer in test(text)) {
+                isSending.value = false;
+
+                if (ref.read(messagesProvider).any((v) => v.id == uuid)) {
+                  aiMessageNotifier.appendTextWithId(uuid, answer);
+                } else {
+                  final newMessage = AiMessageObject(
+                    id: uuid,
+                    text: answer,
+                    createdAt: DateTime.now(),
+                  );
+                  aiMessageNotifier.add([newMessage]);
+                }
+              }
+            } finally {
+              isSending.value = false;
+            }
           },
         ),
       ],
