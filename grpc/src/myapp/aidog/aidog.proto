@@ -5,6 +5,7 @@ option go_package = "taqucinco.com/myapp/aidog";
 
 service Aidog {
   rpc Ask (QaRequest) returns (QaResponse) {}
+  rpc SendQuestion (DifyRequest) returns (stream DifyResponse) {}
 }
 
 message QaRequest {
@@ -13,4 +14,16 @@ message QaRequest {
 
 message QaResponse {
   string answer = 1;
+}
+
+message DifyRequest {
+  string name = 1;
+  string question = 2;
+  optional string conversation_id = 3;
+}
+
+message DifyResponse {
+  string task_id = 1;
+  string conversation_id = 2;
+  optional string answer = 3;
 }

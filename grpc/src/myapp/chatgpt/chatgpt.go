@@ -1,4 +1,4 @@
-package features
+package chatgpt
 
 import (
 	"encoding/json"

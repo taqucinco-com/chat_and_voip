@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AidogClient interface {
 	Ask(ctx context.Context, in *QaRequest, opts ...grpc.CallOption) (*QaResponse, error)
+	SendQuestion(ctx context.Context, in *DifyRequest, opts ...grpc.CallOption) (Aidog_SendQuestionClient, error)
 }
 
 type aidogClient struct {
@@ -42,11 +43,44 @@ func (c *aidogClient) Ask(ctx context.Context, in *QaRequest, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *aidogClient) SendQuestion(ctx context.Context, in *DifyRequest, opts ...grpc.CallOption) (Aidog_SendQuestionClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Aidog_ServiceDesc.Streams[0], "/aidog.Aidog/SendQuestion", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &aidogSendQuestionClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Aidog_SendQuestionClient interface {
+	Recv() (*DifyResponse, error)
+	grpc.ClientStream
+}
+
+type aidogSendQuestionClient struct {
+	grpc.ClientStream
+}
+
+func (x *aidogSendQuestionClient) Recv() (*DifyResponse, error) {
+	m := new(DifyResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AidogServer is the server API for Aidog service.
 // All implementations must embed UnimplementedAidogServer
 // for forward compatibility
 type AidogServer interface {
 	Ask(context.Context, *QaRequest) (*QaResponse, error)
+	SendQuestion(*DifyRequest, Aidog_SendQuestionServer) error
 	mustEmbedUnimplementedAidogServer()
 }
 
@@ -56,6 +90,9 @@ type UnimplementedAidogServer struct {
 
 func (UnimplementedAidogServer) Ask(context.Context, *QaRequest) (*QaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ask not implemented")
+}
+func (UnimplementedAidogServer) SendQuestion(*DifyRequest, Aidog_SendQuestionServer) error {
+	return status.Errorf(codes.Unimplemented, "method SendQuestion not implemented")
 }
 func (UnimplementedAidogServer) mustEmbedUnimplementedAidogServer() {}
 
@@ -88,6 +125,27 @@ func _Aidog_Ask_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Aidog_SendQuestion_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DifyRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AidogServer).SendQuestion(m, &aidogSendQuestionServer{stream})
+}
+
+type Aidog_SendQuestionServer interface {
+	Send(*DifyResponse) error
+	grpc.ServerStream
+}
+
+type aidogSendQuestionServer struct {
+	grpc.ServerStream
+}
+
+func (x *aidogSendQuestionServer) Send(m *DifyResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Aidog_ServiceDesc is the grpc.ServiceDesc for Aidog service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +158,12 @@ var Aidog_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Aidog_Ask_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SendQuestion",
+			Handler:       _Aidog_SendQuestion_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "aidog/aidog.proto",
 }

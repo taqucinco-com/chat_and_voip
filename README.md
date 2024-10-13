@@ -69,6 +69,7 @@ https://grpc.io/docs/languages/dart/quickstart/
 1. Protocl bufferのdart pluginをインストール
 
 ```
+$ brew install protobuf
 $ dart pub global activate protoc_plugin
 $ export PATH="$PATH:$HOME/.pub-cache/bin"
 ```

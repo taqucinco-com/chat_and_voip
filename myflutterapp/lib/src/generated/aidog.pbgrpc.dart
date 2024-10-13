@@ -25,6 +25,10 @@ class AidogClient extends $grpc.Client {
       '/aidog.Aidog/Ask',
       ($0.QaRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.QaResponse.fromBuffer(value));
+  static final _$sendQuestion = $grpc.ClientMethod<$0.DifyRequest, $0.DifyResponse>(
+      '/aidog.Aidog/SendQuestion',
+      ($0.DifyRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.DifyResponse.fromBuffer(value));
 
   AidogClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -34,6 +38,10 @@ class AidogClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.QaResponse> ask($0.QaRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$ask, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.DifyResponse> sendQuestion($0.DifyRequest request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$sendQuestion, $async.Stream.fromIterable([request]), options: options);
   }
 }
 
@@ -49,11 +57,23 @@ abstract class AidogServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.QaRequest.fromBuffer(value),
         ($0.QaResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DifyRequest, $0.DifyResponse>(
+        'SendQuestion',
+        sendQuestion_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.DifyRequest.fromBuffer(value),
+        ($0.DifyResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.QaResponse> ask_Pre($grpc.ServiceCall call, $async.Future<$0.QaRequest> request) async {
     return ask(call, await request);
   }
 
+  $async.Stream<$0.DifyResponse> sendQuestion_Pre($grpc.ServiceCall call, $async.Future<$0.DifyRequest> request) async* {
+    yield* sendQuestion(call, await request);
+  }
+
   $async.Future<$0.QaResponse> ask($grpc.ServiceCall call, $0.QaRequest request);
+  $async.Stream<$0.DifyResponse> sendQuestion($grpc.ServiceCall call, $0.DifyRequest request);
 }
