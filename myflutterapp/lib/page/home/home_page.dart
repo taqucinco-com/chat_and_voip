@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grpc/grpc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myflutterapp/component/chat_tile.dart';
 import 'package:myflutterapp/driver/http/client_channel_establisher_provider.dart';
@@ -14,6 +15,8 @@ import 'package:myflutterapp/feature/message/domain/message_entity.dart';
 import 'package:myflutterapp/feature/message/usecase/message_store.dart';
 import 'package:myflutterapp/feature/message/usecase/message_usecase_provider.dart';
 import 'package:myflutterapp/page/home/components/message_bar.dart';
+import 'package:myflutterapp/src/generated/aidog.pbgrpc.dart';
+import 'package:myflutterapp/src/generated/aidog.pbjson.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -27,8 +30,8 @@ class HomePage extends HookConsumerWidget {
 
     final ask = ref.read(aiDogAskProvider);
     final establish = ref.read(clientChannelEstablisherProvider);
-    // final myMessages = useState<List<(DateTime date, String word)>>([]);
-    // final dogMessages = useState<List<(DateTime date, String word)>>([]);
+    final myMessages = useState<List<(DateTime date, String word)>>([]);
+    final dogMessages = useState<List<(DateTime date, String word)>>([]);
 
     final scrollController = useScrollController();
 
@@ -83,28 +86,38 @@ class HomePage extends HookConsumerWidget {
         Expanded(child: messageList),
         MessageBar(
           onSubmit: (text) async {
-            final result = await advertiser
-                .sendTriggerEvent(AdvertiseTriggerEventQuestion());
-            if (result) {
-              if (interstitialAd.data != null) {
-                interstitialAd.data!.show();
-              }
-            }
-            // myMessages.value = [...myMessages.value, (DateTime.now(), text)];
-            try {
-              isSending.value = true;
-              await for (final progress in useCase.send(text)) {
-                print(progress);
-              }
-              // final answer = await ask(text, establish);
-              // final answerWithEmoji = '$answer \u{1F436}';
-              // dogMessages.value = [
-              //   ...dogMessages.value,
-              //   (DateTime.now(), answerWithEmoji),
-              // ];
-            } finally {
-              isSending.value = false;
-            }
+            // final result = await advertiser
+            //     .sendTriggerEvent(AdvertiseTriggerEventQuestion());
+            // if (result) {
+            //   if (interstitialAd.data != null) {
+            //     interstitialAd.data!.show();
+            //   }
+            // }
+            myMessages.value = [...myMessages.value, (DateTime.now(), text)];
+            // try {
+            //   isSending.value = true;
+            //   // await for (final progress in useCase.send(text)) {
+            //   //   print(progress);
+            //   // }
+
+            //   dogMessages.value = [
+            //     ...dogMessages.value,
+            //     (DateTime.now(), ""),
+            //   ];
+
+            //   await for (final answer in test(text)) {
+            //     isSending.value = false;
+            //     final last = dogMessages.value.last;
+            //     final filtered =
+            //         dogMessages.value.sublist(0, dogMessages.value.length - 1);
+            //     dogMessages.value = [
+            //       ...filtered,
+            //       (last.$1, last.$2 + answer),
+            //     ];
+            //   }
+            // } finally {
+            //   isSending.value = false;
+            // }
           },
         ),
       ],
@@ -147,5 +160,29 @@ class HomePage extends HookConsumerWidget {
         _ => const CircularProgressIndicator(),
       },
     );
+  }
+}
+
+Stream<String> test(String question) async* {
+  final channel = ClientChannel(
+    'localhost',
+    port: 50051,
+    options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+  );
+  final stub = AidogClient(channel);
+
+  try {
+    final request = DifyRequest();
+    request.question = question;
+    request.name = "Sudo";
+    request.conversationId = "";
+    await for (var response in stub.sendQuestion(request)) {
+      print("Received: $response");
+      yield response.answer;
+    }
+  } catch (e) {
+    print('Caught error: $e');
+  } finally {
+    await channel.shutdown();
   }
 }
