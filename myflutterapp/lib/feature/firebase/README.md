@@ -15,6 +15,8 @@ $ flutterfire configure
 - DefaultFirebaseOptionsがlibフォルダ直下に作られる
 - /ios, /androidなどのフォルダ内にFirebase関連の設定ファイルが作られる。
 - open ios/Runner.xcworkspaceを起動して `プロジェクト > TARGET > Runner > Info > URL Types > URL SchemesにREVERSED_CLIENT_IDを入れる
+- ios/Runner/GoogleService-Info.plist にFirebaseのアプリ設定からダウンロードした設定ファイルを入れる
+- android/app/google-services.json にFirebaseのアプリ設定からダウンロードした設定ファイルを入れる
 
 https://github.com/firebase/flutterfire/blob/master/packages/firebase_auth/firebase_auth/example/lib/main.dart
 のコードで初期化する。
